@@ -1,8 +1,7 @@
-**** Launcher (based om FTB Launcher)
+Multis Launcher (based om FTB Launcher)
 ====
 
-##The license of FTB
-Copyright 2012 FTB Launcher Contributors
+##The license of Multis Launcher
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,7 +32,7 @@ limitations under the License.
 Before submitting a pull request, you should ensure that your fork is up to date.
 To do this, run these commands:
 
-    git remote add upstream git://github.com/Slowpoke101/FTBLaunch.git
+    git remote add upstream git://github.com/Arkuda/MultisLaunch.git
     git pull --rebase upstream master
     git push --force origin <branch_name>
 
