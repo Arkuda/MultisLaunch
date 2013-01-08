@@ -31,7 +31,6 @@ import net.ftb.util.DownloadUtils;
 import net.ftb.util.ErrorUtils;
 import net.ftb.util.FileUtils;
 import net.ftb.util.OSUtils;
-import net.ftb.util.TrackerUtils;
 
 public class ModManager extends JDialog {
 	public static boolean update = false, backup = false, erroneous = false, upToDate = false;
@@ -88,12 +87,13 @@ public class ModManager extends JDialog {
 				in.close();
 				fout.flush();
 				fout.close();
+				Logger.logError("COMPLITE DOWNLOADING");
+				
 			}
 		}
 
 		protected boolean downloadModPack(String modPackName, String dir) throws IOException, NoSuchAlgorithmException {
-			Logger.logInfo("Downloading Mod Pack");
-			TrackerUtils.sendPageView("net/ftb/tools/ModManager.java", "Downloaded: " + modPackName + " v." + curVersion.replace('_', '.'));
+			Logger.logInfo("Downloading mod pack.");			
 			String dynamicLoc = OSUtils.getDynamicStorageLocation();
 			String installPath = Settings.getSettings().getInstallPath();
 			ModPack pack = ModPack.getSelectedPack();
@@ -101,28 +101,59 @@ public class ModManager extends JDialog {
 			File baseDynamic = new File(dynamicLoc, "ModPacks" + sep + dir + sep);
 			baseDynamic.mkdirs();
 			new File(baseDynamic, modPackName).createNewFile();
-			downloadUrl(baseDynamic.getPath() + sep + modPackName, DownloadUtils.getCreeperhostLink(baseLink + modPackName));
-			String animation = pack.getAnimation();
-			if(!animation.equalsIgnoreCase("empty")) {
-				downloadUrl(baseDynamic.getPath() + sep + animation, DownloadUtils.getCreeperhostLink(baseLink + animation));
-			}
-			if(DownloadUtils.isValid(new File(baseDynamic, modPackName), baseLink + modPackName)) {
+
+			if(pack.getisOp()){
+				downloadUrl(baseDynamic.getPath() + sep + modPackName, DownloadUtils.getStaticDropboxLink(pack.getUrl()));
+				String animation = pack.getAnimation();
+				
+				Logger.logError("unziping");
+				
 				FileUtils.extractZipTo(baseDynamic.getPath() + sep + modPackName, baseDynamic.getPath());
 				clearModsFolder(pack);
-				FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
-				FileUtils.delete(new File(installPath, dir + "/instMods/"));
+				//	FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
+				//	FileUtils.delete(new File(installPath, dir + "/instMods/"));
 				File version = new File(installPath, dir + sep + "version");
 				BufferedWriter out = new BufferedWriter(new FileWriter(version));
 				out.write(curVersion.replace("_", "."));
 				out.flush();
 				out.close();
+				Logger.logWarn("unziping end");
 				return true;
-			} else {
-				ErrorUtils.tossError("Error downloading modpack!!!");
-				return false;
+
 			}
+			else
+			{
+				downloadUrl(baseDynamic.getPath() + sep + modPackName, DownloadUtils.getCreeperhostLink(baseLink + modPackName));
+				String animation = pack.getAnimation();
+				if(!animation.equalsIgnoreCase("empty")) {
+					downloadUrl(baseDynamic.getPath() + sep + animation, DownloadUtils.getCreeperhostLink(baseLink + animation));
+				}
+
+					if(DownloadUtils.isValid(new File(baseDynamic, modPackName), baseLink + modPackName)) {
+						FileUtils.extractZipTo(baseDynamic.getPath() + sep + modPackName, baseDynamic.getPath());
+						clearModsFolder(pack);
+						FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
+						FileUtils.delete(new File(installPath, dir + "/instMods/"));
+						File version = new File(installPath, dir + sep + "version");
+						BufferedWriter out = new BufferedWriter(new FileWriter(version));
+						out.write(curVersion.replace("_", "."));
+						out.flush();
+						out.close();
+						Logger.logError("PAKEGE ISNT OP");
+						return true;
+					} else {
+						ErrorUtils.tossError("Error downloading modpack!!!");
+						return false;
+
+					}
+				}
+				
+			}
+			
 		}
-	}
+
+
+
 
 	/**
 	 * Create the frame.

@@ -29,7 +29,7 @@ import net.ftb.data.Settings;
 import net.ftb.data.events.ModPackListener;
 import net.ftb.gui.LaunchFrame;
 import net.ftb.gui.dialogs.EditModPackDialog;
-import net.ftb.gui.dialogs.ModPackFilterDialog;
+import net.ftb.gui.dialogs.FilterDialogPacks;
 import net.ftb.gui.dialogs.SearchDialog;
 import net.ftb.locale.I18N;
 import net.ftb.locale.I18N.Locale;
@@ -90,7 +90,7 @@ public class ModpacksPane extends JPanel implements ILauncherPane, ModPackListen
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(loaded) {
-					ModPackFilterDialog filterDia = new ModPackFilterDialog(instance);
+					FilterDialogPacks filterDia = new FilterDialogPacks(instance);
 					filterDia.setVisible(true);
 				}
 			}
@@ -138,7 +138,7 @@ public class ModpacksPane extends JPanel implements ILauncherPane, ModPackListen
 		packs.add(p);
 
 		packsScroll = new JScrollPane();
-		packsScroll.setBounds(-3, 30, 420, 283);
+		packsScroll.setBounds(0, 30, 420, 280);
 		packsScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		packsScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		packsScroll.setWheelScrollingEnabled(true);
@@ -297,7 +297,7 @@ public class ModpacksPane extends JPanel implements ILauncherPane, ModPackListen
 		LaunchFrame.getInstance().updateFooter();
 	}
 
-	private static int getIndex() {
+	public static int getIndex() {
 		return (!currentPacks.isEmpty()) ? currentPacks.get(selectedPack).getIndex() : selectedPack;
 	}
 

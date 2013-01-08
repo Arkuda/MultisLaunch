@@ -73,7 +73,7 @@ public class MinecraftFrame extends JFrame implements WindowListener {
 			try {
 				animation.start();
 				label = new JLabel(new ImageIcon(animationname));
-				label.setBounds(0, 0, size.width - 16, size.height - 38);
+				label.setBounds(new Rectangle(size));
 				fixSize();
 				getContentPane().setBackground(Color.black);
 				add(label);
@@ -95,7 +95,7 @@ public class MinecraftFrame extends JFrame implements WindowListener {
 		mcApplet.setStub(appletWrap);
 		add(appletWrap);
 
-		appletWrap.setPreferredSize(new Dimension(size.width - 16, size.height - 38));
+		appletWrap.setPreferredSize(size);
 		pack();
 		validate();
 		appletWrap.init();

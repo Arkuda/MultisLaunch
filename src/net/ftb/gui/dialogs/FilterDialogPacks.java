@@ -15,7 +15,7 @@ import net.ftb.data.ModPack;
 import net.ftb.gui.LaunchFrame;
 import net.ftb.gui.panes.ModpacksPane;
 
-public class ModPackFilterDialog extends JDialog {
+public class FilterDialogPacks extends JDialog {
 	private JPanel panel = new JPanel();
 	private JLabel typeLbl = new JLabel("Mod Pack Type:"), originLbl = new JLabel("Mod Pack Origin:"), packLbl = new JLabel("Compatible Pack:"), lblModPackAval = new JLabel("Mod Pack Avaliability:");
 	private JComboBox typeBox = new JComboBox(new String[] {"Client", "Server"}), 
@@ -26,7 +26,7 @@ public class ModPackFilterDialog extends JDialog {
 
 	private ModpacksPane pane;
 
-	public ModPackFilterDialog(ModpacksPane instance) {
+	public FilterDialogPacks(ModpacksPane instance) {
 		super(LaunchFrame.getInstance(), true);
 		setupGui();
 		this.pane = instance;
@@ -90,7 +90,7 @@ public class ModPackFilterDialog extends JDialog {
 		btnAddPack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PrivatePackDialog ap = new PrivatePackDialog();
+				AddPackDialog ap = new AddPackDialog();
 				setVisible(false);
 				ap.setVisible(true);
 			}

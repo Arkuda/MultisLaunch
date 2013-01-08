@@ -19,7 +19,6 @@ import java.util.Scanner;
 
 import net.ftb.data.Settings;
 import net.ftb.gui.LaunchFrame;
-import net.ftb.gui.dialogs.AdvancedOptionsDialog;
 import net.ftb.log.Logger;
 
 public class DownloadUtils extends Thread {
@@ -49,6 +48,7 @@ public class DownloadUtils extends Thread {
 			}
 		} catch (IOException e) { }
 		connection.disconnect();
+		Logger.logInfo(resolved);
 		return resolved; 
 	}
 
@@ -74,32 +74,31 @@ public class DownloadUtils extends Thread {
 			}
 		} catch (IOException e) { }
 		connection.disconnect();
+		Logger.logInfo(resolved);
 		return resolved; 
+	}
+	
+	public static String getStaticDropboxLink(String file) {
+		String resolved = ("https://dl.dropbox.com/u/61847240/FTBOP/");
+		resolved += file;
+		HttpURLConnection connection = null;
+		try {
+			connection = (HttpURLConnection) new URL(resolved).openConnection();
+		}			
+		catch (IOException e) { }
+		connection.disconnect();
+		Logger.logInfo(resolved);
+		return resolved; 
+		
 	}
 
 	/**
 	 * @param file - file on the repo in static
-	 * @return boolean representing if the file exists 
+	 * @return true if the file exists
 	 */
 	public static boolean staticFileExists(String file) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(getStaticCreeperhostLink(file)).openStream()));
-			return !reader.readLine().toLowerCase().contains("not found");
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	/**
-	 * @param file - file on the repo
-	 * @return boolean representing if the file exists 
-	 */
-	public static boolean fileExists(String file) {
-		try {
-			if(currentmd5.isEmpty()) {
-				currentmd5 = md5("mcepoch1" + getTime());
-			}
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://www.creeperrepo.net/direct/FTB2/" + currentmd5 + "/" + file).openStream()));
 			return !reader.readLine().toLowerCase().contains("not found");
 		} catch (Exception e) {
 			return false;
@@ -157,6 +156,7 @@ public class DownloadUtils extends Thread {
 				scanner.close();
 			}
 		}
+		Logger.logInfo(resolved);
 		return content;
 	}
 
@@ -205,6 +205,30 @@ public class DownloadUtils extends Thread {
 					}
 				}
 			}
+			scanner = new Scanner(connection.getInputStream());
+			scanner.useDelimiter( "\\Z" );
+			content = scanner.next();
+		} catch (IOException e) { 
+		} finally {
+			connection.disconnect();
+			if (scanner != null) {
+				scanner.close();
+			}
+		}
+		String result = fileMD5(file);
+		Logger.logInfo("Local: " + result.toUpperCase());
+		Logger.logInfo("Remote: " + content.toUpperCase());
+		return content.equalsIgnoreCase(result);
+	}
+	
+	public static boolean isValidD(File file, String url) throws IOException {
+		String content = null;
+		Scanner scanner = null;
+		String resolved = ("https://dl.dropbox.com/u/61847240/FTBOP/");
+		resolved += url;
+		HttpURLConnection connection = null;
+		try {
+			connection = (HttpURLConnection) new URL(resolved).openConnection();
 			scanner = new Scanner(connection.getInputStream());
 			scanner.useDelimiter( "\\Z" );
 			content = scanner.next();
@@ -278,7 +302,7 @@ public class DownloadUtils extends Thread {
 		}
 		serversLoaded = true;
 		if(LaunchFrame.getInstance() != null && LaunchFrame.getInstance().optionsPane != null) {
-			AdvancedOptionsDialog.setDownloadServers();
+			LaunchFrame.getInstance().optionsPane.setDownloadServers();
 		}
 	}
 }

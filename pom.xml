@@ -4,7 +4,7 @@
 
   <groupId>net.ftb</groupId>
   <artifactId>FTB_Launcher</artifactId>
-  <version>1.2.0</version>
+  <version>1.1.1</version>
   <packaging>jar</packaging>
   <properties>
     <buildNumber>0</buildNumber>
@@ -17,13 +17,13 @@
   <url>https://github.com/Slowpoke101/FTBLaunch</url>
 
   <build>
-    <defaultGoal>clean package</defaultGoal>
+    <defaultGoal>clean install package</defaultGoal>
 
     <sourceDirectory>src</sourceDirectory>
-    <resources>
-      <resource>
+    <resources>  
+      <resource>  
         <directory>res</directory>
-      </resource>
+      </resource>  
     </resources>
 
     <plugins>
@@ -51,16 +51,16 @@
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
             <manifestEntries>
-              <Implementation-Title>${project.version}</Implementation-Title>
+              <Implementation-Title>${version}</Implementation-Title>
               <Implementation-Version>${buildNumber}</Implementation-Version>
             </manifestEntries>
           </archive>
         </configuration>
       </plugin>
       <plugin>
-        <groupId>com.akathist.maven.plugins.launch4j</groupId>
-        <artifactId>launch4j-maven-plugin</artifactId>
-        <version>1.5.2</version>
+        <groupId>org.bluestemsoftware.open.maven.plugin</groupId>
+        <artifactId>launch4j-plugin</artifactId>
+        <version>1.5.0.0</version>
         <executions>
           <execution>
             <configuration>
@@ -109,16 +109,16 @@
                   <fileset dir="res/template/FTB_Launcher.app" />
                 </copy>
                 <copy file="${project.build.directory}/${project.artifactId}-${project.version}.jar" tofile="${project.build.directory}/${project.artifactId}.app/Contents/Resources/FTB_Launcher.jar" />
-                <replace file="${project.build.directory}/${project.artifactId}.app/Contents/Info.plist" token="##VERSION##" value="${project.version}" />
+                <replace file="${project.build.directory}/${project.artifactId}.app/Contents/Info.plist" token="##VERSION##" value="${version}" />
                 <fixcrlf srcdir="${project.build.directory}/${project.artifactId}.app/Contents/MacOS" includes="FTB_Launcher" eol="unix" />
                 <fixcrlf srcdir="${project.build.directory}/${project.artifactId}.app/Contents/" includes="Info.plist" eol="unix" />
                 <chmod file="${project.build.directory}/${project.artifactId}.app/Contents/MacOS/FTB_Launcher" perm="+x" />
                 <zip destfile="${project.build.directory}/${project.artifactId}.app.zip">
-                  <zipfileset dir="${project.build.directory}/${project.artifactId}.app/Contents/MacOS" prefix="${project.artifactId}.app/Contents/MacOS/" filemode="755" />
-                  <zipfileset dir="${project.build.directory}/${project.artifactId}.app/Contents/Resources" prefix="${project.artifactId}.app/Contents/Resources/" />
-                  <zipfileset dir="${project.build.directory}/${project.artifactId}.app/Contents/" includes="Info.plist" fullpath="${project.artifactId}.app/Contents/Info.plist" />
+		  <zipfileset dir="${project.build.directory}/${project.artifactId}.app/Contents/MacOS" prefix="${project.artifactId}.app/Contents/MacOS/" filemode="755" />
+		  <zipfileset dir="${project.build.directory}/${project.artifactId}.app/Contents/Resources" prefix="${project.artifactId}.app/Contents/Resources/" />
+		  <zipfileset dir="${project.build.directory}/${project.artifactId}.app/Contents/" includes="Info.plist" fullpath="${project.artifactId}.app/Contents/Info.plist" />
                 </zip>
-                <delete dir="${project.build.directory}/${project.artifactId}.app" />
+		<delete dir="${project.build.directory}/${project.artifactId}.app" />
               </target>
             </configuration>
             <goals>
@@ -138,9 +138,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.swinglabs.swingx</groupId>
-      <artifactId>swingx-all</artifactId>
+      <groupId>org.swinglabs</groupId>
+      <artifactId>swingx</artifactId>
       <version>1.6.4</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/External Jars/swingx-all-1.6.4.jar</systemPath>
     </dependency>
   </dependencies>
 </project>

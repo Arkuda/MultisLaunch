@@ -80,11 +80,11 @@ public class Settings extends Properties {
 	public void setInstallPath(String path) {
 		setProperty("installPath", path);
 	}
-
+	
 	public String getStyle() {
 		return getProperty("style", "defaultStyle.cfg");
 	}
-
+	
 	public void setStyle(String path) {
 		setProperty("style", path);
 	}
@@ -143,10 +143,6 @@ public class Settings extends Properties {
 
 	public String getPackVer() {
 		return getProperty(ModPack.getSelectedPack().getDir(), "Recommended Version");
-	}
-
-	public String getPackVer(String packDir) {
-		return getProperty(packDir, "Recommended Version");
 	}
 
 	public String getLastAddPath() {
@@ -231,11 +227,11 @@ public class Settings extends Properties {
 	public boolean getSnooper() {
 		return Boolean.parseBoolean(getProperty("snooperDisable", "false"));
 	}
-
+	
 	public String getAdditionalJavaOptions() {
 		return getProperty("additionalJavaOptions", "");
 	}
-
+	
 	public void setAdditionalJavaOptions(String opts) {
 		setProperty("additionalJavaOptions", opts);
 	}

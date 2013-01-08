@@ -8,11 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -42,7 +46,6 @@ import net.ftb.data.LoginResponse;
 import net.ftb.data.Map;
 import net.ftb.data.ModPack;
 import net.ftb.data.Settings;
-import net.ftb.data.TexturePack;
 import net.ftb.data.UserManager;
 import net.ftb.gui.dialogs.InstallDirectoryDialog;
 import net.ftb.gui.dialogs.LauncherUpdateDialog;
@@ -70,15 +73,14 @@ import net.ftb.tools.ProcessMonitor;
 import net.ftb.tools.TextureManager;
 import net.ftb.tracking.AnalyticsConfigData;
 import net.ftb.tracking.JGoogleAnalyticsTracker;
+import net.ftb.tracking.JGoogleAnalyticsTracker.DispatchMode;
 import net.ftb.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import net.ftb.updater.UpdateChecker;
 import net.ftb.util.DownloadUtils;
 import net.ftb.util.ErrorUtils;
 import net.ftb.util.FileUtils;
 import net.ftb.util.OSUtils;
-import net.ftb.util.OSUtils.OS;
 import net.ftb.util.StyleUtil;
-import net.ftb.util.TrackerUtils;
 import net.ftb.workers.GameUpdateWorker;
 import net.ftb.workers.LoginWorker;
 
@@ -96,6 +98,7 @@ public class LaunchFrame extends JFrame {
 	private static JComboBox users, tpInstallLocation, mapInstallLocation;
 	private static LaunchFrame instance = null;
 	private static String version = "1.2.0";
+	private static final long serialVersionUID = 1L;
 
 	public final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);	
 
@@ -106,12 +109,12 @@ public class LaunchFrame extends JFrame {
 	public TexturepackPane tpPane;
 	public OptionsPane optionsPane;
 
-	public static int buildNumber = 120;
+	public static int buildNumber = 199;
 	public static boolean noConfig = false;
 	public static LauncherConsole con;
 	public static String tempPass = "";
 	public static Panes currentPane = Panes.MODPACK;
-	public static JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(new AnalyticsConfigData("UA-37330489-2"), GoogleAnalyticsVersion.V_4_7_2);
+	public static JGoogleAnalyticsTracker tracker;
 
 	public static final String FORGENAME = "MinecraftForge.zip";
 
@@ -128,13 +131,17 @@ public class LaunchFrame extends JFrame {
 	 * @param args - CLI arguments
 	 */
 	public static void main(String[] args) {
-		tracker.setEnabled(true);
-		TrackerUtils.sendPageView("net/ftb/gui/LaunchFrame.java", "Launcher Start v" + version);
+		AnalyticsConfigData config = new AnalyticsConfigData("UA-37330489-2");
+		tracker = new JGoogleAnalyticsTracker(config, GoogleAnalyticsVersion.V_4_7_2, DispatchMode.MULTI_THREAD);
+		//tracker.setEnabled(true);
+
+		if(!Settings.getSettings().getSnooper()) {
+			tracker.trackPageViewFromReferrer("net/ftb/gui/LaunchFrame.java", "Launcher Start", "Feed The Beast", "http://www.feed-the-beast.com", "/");
+		}
 
 		if(new File(Settings.getSettings().getInstallPath(), "FTBLauncherLog.txt").exists()) {
 			new File(Settings.getSettings().getInstallPath(), "FTBLauncherLog.txt").delete();
 		}
-
 		if(new File(Settings.getSettings().getInstallPath(), "MinecraftLog.txt").exists()) {
 			new File(Settings.getSettings().getInstallPath(), "MinecraftLog.txt").delete();
 		}
@@ -142,7 +149,8 @@ public class LaunchFrame extends JFrame {
 		DownloadUtils thread = new DownloadUtils();
 		thread.start();
 
-		Logger.logInfo("FTBLaunch starting up (version "+ version + ")");
+		Logger.logInfo("You have quastion ? Ask me - reyzor2142@gmail.com");
+		Logger.logInfo("FTBLaunch Offline Play starting up (version "+ version + ")");
 		Logger.logInfo("Java version: "+System.getProperty("java.version"));
 		Logger.logInfo("Java vendor: "+System.getProperty("java.vendor"));
 		Logger.logInfo("Java home: "+System.getProperty("java.home"));
@@ -207,11 +215,11 @@ public class LaunchFrame extends JFrame {
 				Map.addListener(frame.mapsPane);
 				Map.loadAll();
 
-				TexturePack.addListener(frame.tpPane);
-				TexturePack.loadAll();
+				//				TexturePack.addListener(frame.tpPane);
+				//				TexturePack.loadAll();
 
 				UpdateChecker updateChecker = new UpdateChecker(buildNumber);
-				if(updateChecker.shouldUpdate()) {
+				if (updateChecker.shouldUpdate()) {
 					LauncherUpdateDialog p = new LauncherUpdateDialog(updateChecker);
 					p.setVisible(true);
 				}
@@ -231,11 +239,7 @@ public class LaunchFrame extends JFrame {
 		panel = new JPanel();
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		if(OSUtils.getCurrentOS() == OS.WINDOWS) {
-			setBounds(100, 100, 842, 480);
-		} else {
-			setBounds(100, 100, 850, 480);
-		}
+		setBounds(100, 100, 850, 480);
 		panel.setBounds(0, 0, 850, 480);
 		panel.setLayout(null);
 		footer.setBounds(0, 380, 850, 100);
@@ -245,6 +249,23 @@ public class LaunchFrame extends JFrame {
 		panel.add(tabbedPane);
 		panel.add(footer);
 		setContentPane(panel);
+
+		addWindowListener(new WindowListener() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				tracker.completeBackgroundTasks(1000);
+				try {
+					Thread.sleep(1100);
+				} catch (InterruptedException e) { }
+			}
+
+			@Override public void windowActivated(WindowEvent arg0) { }
+			@Override public void windowClosed(WindowEvent arg0) { }
+			@Override public void windowDeactivated(WindowEvent arg0) { }
+			@Override public void windowDeiconified(WindowEvent arg0) { }
+			@Override public void windowIconified(WindowEvent arg0) { }
+			@Override public void windowOpened(WindowEvent arg0) { }
+		});
 
 		//Footer
 		footerLogo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -350,12 +371,7 @@ public class LaunchFrame extends JFrame {
 					if(modPacksPane.packPanels.size() > 0 && getSelectedModIndex() >= 0) {
 						try {
 							String version = (Settings.getSettings().getPackVer().equalsIgnoreCase("recommended version") || Settings.getSettings().getPackVer().equalsIgnoreCase("newest version")) ? ModPack.getSelectedPack().getVersion().replace(".", "_") : Settings.getSettings().getPackVer().replace(".", "_");
-							if(ModPack.getSelectedPack().isPrivatePack()) {
-								OSUtils.browse(DownloadUtils.getCreeperhostLink("privatepacks%5E" + ModPack.getSelectedPack().getDir() + "%5E" + version + "%5E" + ModPack.getSelectedPack().getServerUrl()));
-							} else {
-								OSUtils.browse(DownloadUtils.getCreeperhostLink("modpacks%5E" + ModPack.getSelectedPack().getDir() + "%5E" + version + "%5E" + ModPack.getSelectedPack().getServerUrl()));
-							}
-							TrackerUtils.sendPageView(ModPack.getSelectedPack().getName() + " Server Download", ModPack.getSelectedPack().getName());
+							OSUtils.browse(DownloadUtils.getCreeperhostLink("modpacks%5E" + ModPack.getSelectedPack().getDir() + "%5E" + version + "%5E" + ModPack.getSelectedPack().getServerUrl()));
 						} catch (NoSuchAlgorithmException e) { }
 					}
 				}
@@ -401,10 +417,10 @@ public class LaunchFrame extends JFrame {
 		tpInstall.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(tpPane.texturePackPanels.size() > 0 && getSelectedTexturePackIndex() >= 0) {
-					TextureManager man = new TextureManager(new JFrame(), true);
-					man.setVisible(true);
-				}
+				TextureManager.installDir = (String)tpInstallLocation.getSelectedItem();
+				TextureManager man = new TextureManager(new JFrame(), true);
+				man.setVisible(true);
+				TextureManager.cleanUp();
 			}
 		});
 
@@ -444,6 +460,7 @@ public class LaunchFrame extends JFrame {
 		tabbedPane.add(modPacksPane, 2);
 		tabbedPane.add(mapsPane, 3);
 		tabbedPane.add(tpPane, 4);
+		tabbedPane.setEnabledAt(4, false);
 		setNewsIcon();
 		tabbedPane.setIconAt(1, new ImageIcon(this.getClass().getResource("/image/tabs/options.png")));
 		tabbedPane.setIconAt(2, new ImageIcon(this.getClass().getResource("/image/tabs/modpacks.png")));
@@ -566,9 +583,6 @@ public class LaunchFrame extends JFrame {
 			enableObjects();
 			return;
 		}
-		try {
-			TextureManager.updateTextures();
-		} catch (Exception e1) { }
 		MinecraftVersionDetector mvd = new MinecraftVersionDetector();
 		if(!new File(installPath, pack.getDir() + "/minecraft/bin/minecraft.jar").exists() || mvd.shouldUpdate(installPath + "/" + pack.getDir() + "/minecraft")) {
 			final ProgressMonitor progMonitor = new ProgressMonitor(this, "Downloading minecraft...", "", 0, 100);
@@ -621,6 +635,33 @@ public class LaunchFrame extends JFrame {
 	}
 
 	/**
+	 * @param filename - what to save it as on the system
+	 * @param urlString - the url to download
+	 * @throws IOException - various
+	 */
+	private void downloadUrl(String filename, String urlString) throws IOException {
+		BufferedInputStream in = null;
+		FileOutputStream fout = null;
+		try {
+			in = new BufferedInputStream(new URL(urlString).openStream());
+			fout = new FileOutputStream(filename);
+			byte data[] = new byte[1024];
+			int count;
+			while ((count = in.read(data, 0, 1024)) != -1) {
+				fout.write(data, 0, count);
+			}
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+			if (fout != null) {
+				fout.flush();
+				fout.close();
+			}	
+		}
+	}
+
+	/**
 	 * launch the game with the mods in the classpath
 	 * @param workingDir - install path
 	 * @param username - the MC username
@@ -630,7 +671,7 @@ public class LaunchFrame extends JFrame {
 		try {
 			Process minecraftProcess = MinecraftLauncher.launchMinecraft(workingDir, username, password, FORGENAME, Settings.getSettings().getRamMax());
 			StreamLogger.start(minecraftProcess.getInputStream(), new LogEntry().level(LogLevel.UNKNOWN));
-			TrackerUtils.sendPageView(ModPack.getSelectedPack().getName() + " Launched", ModPack.getSelectedPack().getName());
+			tracker.completeBackgroundTasks(1000);
 			try {
 				Thread.sleep(1500);
 			} catch (InterruptedException e) { }
@@ -641,7 +682,7 @@ public class LaunchFrame extends JFrame {
 				ProcessMonitor.create(minecraftProcess, new Runnable() {
 					@Override
 					public void run() {
-						if(!Settings.getSettings().getKeepLauncherOpen()) {
+						if (!Settings.getSettings().getKeepLauncherOpen()) {
 							System.exit(0);
 						} else {
 							LaunchFrame launchFrame = LaunchFrame.this;
@@ -797,7 +838,7 @@ public class LaunchFrame extends JFrame {
 		tabbedPane.setEnabledAt(1, true);
 		tabbedPane.setEnabledAt(2, true);
 		tabbedPane.setEnabledAt(3, true);
-		tabbedPane.setEnabledAt(4, true);
+		//		tabbedPane.setEnabledAt(4, true);
 		tabbedPane.getSelectedComponent().setEnabled(true);
 		updateFooter();
 		mapInstall.setEnabled(true);
@@ -808,7 +849,6 @@ public class LaunchFrame extends JFrame {
 		users.setEnabled(true);
 		serverbutton.setEnabled(true);
 		tpInstallLocation.setEnabled(true);
-		TextureManager.updating = false;
 	}
 
 	/**
@@ -968,6 +1008,7 @@ public class LaunchFrame extends JFrame {
 			} else {
 				l = Long.parseLong(Settings.getSettings().getNewsDate().substring(0, 10));
 			}
+			System.out.println(l);
 			for (Long timeStamp : timeStamps) {
 				long time = timeStamp;
 				if (time > l) {
@@ -979,6 +1020,6 @@ public class LaunchFrame extends JFrame {
 			Logger.logError(e.getMessage(), e);
 		}
 
-		return i;
+		return 1337;
 	}
 }

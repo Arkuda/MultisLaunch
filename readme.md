@@ -1,7 +1,7 @@
-FTB Launcher
+**** Launcher (based om FTB Launcher)
 ====
 
-##The license
+##The license of FTB
 Copyright 2012 FTB Launcher Contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");

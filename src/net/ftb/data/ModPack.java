@@ -24,7 +24,7 @@ import net.ftb.util.OSUtils;
 import net.ftb.workers.ModpackLoader;
 
 public class ModPack {	
-	private String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, sep = File.separator, xml;
+	private String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, sep = File.separator, xml,isOp;
 	private String[] mods, oldVersions;
 	private Image logo, image;
 	private int index;
@@ -103,7 +103,7 @@ public class ModPack {
 	 * @return ModPack - the currently selected ModPack
 	 */
 	public static ModPack getSelectedPack() {
-		return getPack(ModpacksPane.getSelectedModIndex());
+		return getPack(ModpacksPane.getIndex());
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class ModPack {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public ModPack(String name, String author, String version, String logo, String url, String image, String dir, String mcVersion, String serverUrl, String info, String mods, 
-			String oldVersions, String animation, int idx, boolean privatePack, String xml) throws IOException, NoSuchAlgorithmException {
+			String oldVersions, String animation, int idx, boolean privatePack, String xml, String isOp) throws IOException, NoSuchAlgorithmException {
 		index = idx;
 		this.name = name;
 		this.author = author;
@@ -137,6 +137,7 @@ public class ModPack {
 		this.serverUrl = serverUrl;
 		this.privatePack = privatePack;
 		this.xml = xml;
+		this.isOp = isOp;
 		if(!animation.equalsIgnoreCase("")) {
 			this.animation = animation;
 		} else {
@@ -160,7 +161,14 @@ public class ModPack {
 		File verFile = new File(tempDir, "version");
 		URL url_;
 		if(!upToDate(verFile)) {
-			url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
+			if(isOp == "true")
+			{
+				url_ = new URL(DownloadUtils.getStaticDropboxLink(logo));
+			}
+			else
+			{
+				url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
+			}
 			this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 			BufferedImage tempImg = ImageIO.read(url_);
 			ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -174,7 +182,17 @@ public class ModPack {
 			if(new File(tempDir, logo).exists()) {
 				this.logo = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + logo);
 			} else {
-				url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
+				
+				if(isOp == "true")
+				{
+					url_ = new URL(DownloadUtils.getStaticDropboxLink(logo));
+				}
+				else
+				{
+					url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
+				}
+				
+				
 				this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -183,7 +201,14 @@ public class ModPack {
 			if(new File(tempDir, image).exists()) {
 				this.image = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + image);
 			} else {
-				url_ = new URL(DownloadUtils.getStaticCreeperhostLink(image));
+				if(isOp == "true")
+				{
+					url_ = new URL(DownloadUtils.getStaticDropboxLink(image));
+				}
+				else
+				{
+					url_ = new URL(DownloadUtils.getStaticCreeperhostLink(image));
+				}
 				this.image = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, image));
@@ -277,6 +302,18 @@ public class ModPack {
 		return image;
 	}
 
+	
+	public boolean getisOp() {
+		if(isOp == "true")
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	/**
 	 * Used to get the directory of the modpack
 	 * @return - the directory for the modpack

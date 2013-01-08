@@ -23,11 +23,7 @@ public class LoginWorker extends SwingWorker<String, Void> {
 
 	@Override
 	protected String doInBackground() {
-		try {
-			return AppUtils.downloadString(new URL("https://login.minecraft.net/?user=" + URLEncoder.encode(username, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&version=13"));
-		} catch(IOException e) {
-			ErrorUtils.tossError("IOException, minecraft servers might be down. Check @ help.mojang.com");
-			return "";
-		}
+		 return "1351157607000:deprecated:" + this.username + ":6c83666eafdc4420aecca854f658c25e:6c83666eafdc4420aecca854f658c25e";
 	}
+	
 }

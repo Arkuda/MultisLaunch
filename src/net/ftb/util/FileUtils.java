@@ -90,19 +90,24 @@ public class FileUtils {
 			byte[] buf = new byte[1024];
 			zipinputstream = new ZipInputStream(new FileInputStream(zipLocation));
 			ZipEntry zipentry = zipinputstream.getNextEntry();
+			
 			while (zipentry != null) { 
+			
 				String entryName = zipentry.getName();
 				int n;
-				if(!zipentry.isDirectory() && !entryName.equalsIgnoreCase("minecraft") && !entryName.equalsIgnoreCase(".minecraft") && !entryName.equalsIgnoreCase("instMods")) {
+				if(!zipentry.isDirectory() && !entryName.equalsIgnoreCase("minecraft") && !entryName.equalsIgnoreCase(".minecraft") && !entryName.equalsIgnoreCase("instMods") && !entryName.equalsIgnoreCase("mods") && !entryName.equalsIgnoreCase("config")) {
 					new File(outputLocation + File.separator + entryName).getParentFile().mkdirs();
 					FileOutputStream fileoutputstream = new FileOutputStream(outputLocation + File.separator + entryName);             
 					while ((n = zipinputstream.read(buf, 0, 1024)) > -1) {
 						fileoutputstream.write(buf, 0, n);
+						
 					}
 					fileoutputstream.close();
 				}
+				
 				zipinputstream.closeEntry();
 				zipentry = zipinputstream.getNextEntry();
+				Logger.logError("unziping");
 			}
 		} catch (Exception e) {
 			Logger.logError(e.getMessage(), e);
@@ -110,6 +115,7 @@ public class FileUtils {
 		} finally {
 			try {
 				zipinputstream.close();
+				Logger.logError("UNZIPING COMPLITE");
 			} catch (IOException e) { }
 		}
 	}
