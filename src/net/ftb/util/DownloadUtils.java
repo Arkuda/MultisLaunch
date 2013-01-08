@@ -1,3 +1,7 @@
+////////////////////////
+//THIS FILE BEEN MODED//
+////////////////////////
+
 package net.ftb.util;
 
 import java.io.BufferedReader;

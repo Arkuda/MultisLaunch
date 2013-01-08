@@ -1,3 +1,8 @@
+////////////////////////
+//THIS FILE BEEN MODED//
+////////////////////////
+
+
 package net.ftb.gui;
 
 import java.awt.Cursor;
@@ -523,7 +528,19 @@ public class LaunchFrame extends JFrame {
 		tpInstall.setEnabled(false);
 		tpInstallLocation.setEnabled(false);
 
-		LoginWorker loginWorker = new LoginWorker(username, password) {
+		boolean isPremium;
+		
+		if(password == "pirate") //TODO: THIS IS PIRATE !!!!!!!!!!!
+		{ 
+			isPremium = false;
+		}
+		else
+		{
+			isPremium = true;
+		}
+		
+		
+		LoginWorker loginWorker = new LoginWorker(username, password,isPremium) { //:TODO LOGIN TOGETHER
 			@Override
 			public void done() {
 				String responseStr;

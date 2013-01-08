@@ -37,7 +37,7 @@ import net.ftb.log.Logger;
 import net.ftb.tools.PastebinPoster;
 
 public class LauncherConsole extends JFrame implements ILogListener {
-	private final static String launcherLogFile = "FTBLauncherLog.txt";
+	private final static String launcherLogFile = "MultisLauncherLog.txt";
 	private final static String minecraftLogFile = "MinecraftLog.txt";
 	private static final long serialVersionUID = 1L;
 	private final JEditorPane displayArea;
