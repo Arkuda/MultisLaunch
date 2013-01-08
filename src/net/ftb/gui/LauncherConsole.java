@@ -81,7 +81,7 @@ public class LauncherConsole extends JFrame implements ILogListener {
 	}
 
 	public LauncherConsole() {
-		setTitle("Console");
+		setTitle("янямнкэ");
 		setMinimumSize(new Dimension(800, 400));
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/image/logo_ftb.png")));
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -203,13 +203,13 @@ public class LauncherConsole extends JFrame implements ILogListener {
 	}
 
 	private String getMessage(LogEntry entry) {
-		String color = "white";
+		String color = "yellow";
 		switch(entry.level) {
 		case ERROR:
-			color = "#FF7070";
+			color = "#ff000";
 			break;
 		case WARN:
-			color = "yellow";
+			color = "blue";
 		}
 		return "<font color=\"" + color + "\">" + (entry.toString(logType).replace("<", "&lt;").replace(">", "&gt;").trim().replace("\r\n","\n").replace("\n","<br/>")) + "</font><br/>";
 	}
