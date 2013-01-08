@@ -3,8 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.ftb</groupId>
-  <artifactId>FTB_Launcher</artifactId>
-  <version>1.1.1</version>
+  <version>1.2.0</version>
   <packaging>jar</packaging>
   <properties>
     <buildNumber>0</buildNumber>
@@ -13,8 +12,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <name>FTB Launcher</name>
-  <url>https://github.com/Slowpoke101/FTBLaunch</url>
+  <name>MultisLaucher</name>
+  <url>https://github.com/Arkuda/MultisLaunch</url>
 
   <build>
     <defaultGoal>clean install package</defaultGoal>
@@ -145,4 +144,12 @@
       <systemPath>${project.basedir}/External Jars/swingx-all-1.6.4.jar</systemPath>
     </dependency>
   </dependencies>
+  <artifactId>MultisLaucher</artifactId>
+  <description>Multis Launcher (based om FTB Launcher)
+The license of Multis Launcher
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</description>
 </project>

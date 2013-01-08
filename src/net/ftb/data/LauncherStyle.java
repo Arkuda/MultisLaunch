@@ -31,7 +31,7 @@ public class LauncherStyle extends Properties {
 	}
 	
 	public Color control = new Color(40, 40, 40);
-	public Color text = new Color(40, 40, 40).brighter().brighter().brighter().brighter().brighter();
+	public Color text = new Color(0, 0, 0);//.brighter().brighter().brighter().brighter().brighter();
 	public Color nimbusBase = new Color(0, 0, 0);
 	public Color nimbusFocus = new Color(40, 40, 40);
 	public Color nimbusBorder = new Color(40, 40, 40);
@@ -39,8 +39,8 @@ public class LauncherStyle extends Properties {
 	public Color info = new Color(40, 40, 40).brighter().brighter();
 	public Color nimbusSelectionBackground = new Color(40, 40, 40).brighter().brighter();
 	public Color footerColor = new Color(25, 25, 25);
-	public Color filterTextColor = new Color(243, 119, 31);
-	public Color filterInnerTextColor = new Color(255, 255, 255);
+	public Color filterTextColor = new Color(10, 10, 10);
+	public Color filterInnerTextColor = new Color(10, 10, 10);
 
 	public void load() {
 		this.load(Settings.getSettings().getStyle());
