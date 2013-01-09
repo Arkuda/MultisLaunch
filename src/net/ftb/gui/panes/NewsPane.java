@@ -34,7 +34,7 @@ public class NewsPane extends JPanel implements ILauncherPane {
 	@Override
 	public void onVisible() {
 		try {
-			news.setPage("http://vk.com/vanyvideo");
+			news.setPage("https://googledrive.com/host/0B0bodxwM6nrAZEpqbzVwU3RDSW8");
 			Settings.getSettings().setNewsDate();
 			Settings.getSettings().save();
 			LaunchFrame.getInstance().setNewsIcon();

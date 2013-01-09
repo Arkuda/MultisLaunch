@@ -279,7 +279,7 @@ public class LaunchFrame extends JFrame {
 		footerLogo.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				OSUtils.browse("http://www.feed-the-beast.com");
+				OSUtils.browse("http://vk.com/vanyvideo");
 			}
 			@Override public void mouseReleased(MouseEvent arg0) { }
 			@Override public void mousePressed(MouseEvent arg0) { }
@@ -292,7 +292,7 @@ public class LaunchFrame extends JFrame {
 		footerCreeper.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				OSUtils.browse("http://www.creeperhost.net/aff.php?aff=293");
+				OSUtils.browse("http://vk.com/vanyvideo");
 			}
 			@Override public void mouseReleased(MouseEvent arg0) { }
 			@Override public void mousePressed(MouseEvent arg0) { }
@@ -1012,7 +1012,7 @@ public class LaunchFrame extends JFrame {
 		int i = 0;
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(new URL("http://launcher.feed-the-beast.com/newsupdate.php").openStream()));
+			reader = new BufferedReader(new InputStreamReader(new URL("https://googledrive.com/host/0B0bodxwM6nrAZEpqbzVwU3RDSW8").openStream()));
 			ArrayList<Long> timeStamps = new ArrayList<Long>();
 			String s = reader.readLine();
 			s = s.trim();
