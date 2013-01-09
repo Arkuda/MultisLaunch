@@ -102,7 +102,7 @@ public class LaunchFrame extends JFrame {
 	private static String[] dropdown_ = {"Select Profile", "Create Profile"};
 	private static JComboBox users, tpInstallLocation, mapInstallLocation;
 	private static LaunchFrame instance = null;
-	private static String version = "1.2.0";
+	private static String version = "1.2.1";
 	private static final long serialVersionUID = 1L;
 
 	public final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);	
