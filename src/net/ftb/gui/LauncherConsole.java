@@ -157,7 +157,7 @@ public class LauncherConsole extends JFrame implements ILogListener {
 		displayArea.setEditable(false);
 		kit = new HTMLEditorKit();
 		displayArea.setEditorKit(kit);
-
+		
 		JScrollPane scrollPane = new JScrollPane(displayArea);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -203,13 +203,13 @@ public class LauncherConsole extends JFrame implements ILogListener {
 	}
 
 	private String getMessage(LogEntry entry) {
-		String color = "yellow";
+		String color = "#66ff00";
 		switch(entry.level) {
 		case ERROR:
 			color = "#ff000";
 			break;
 		case WARN:
-			color = "blue";
+			color = "#0099ff";
 		}
 		return "<font color=\"" + color + "\">" + (entry.toString(logType).replace("<", "&lt;").replace(">", "&gt;").trim().replace("\r\n","\n").replace("\n","<br/>")) + "</font><br/>";
 	}

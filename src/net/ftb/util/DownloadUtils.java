@@ -83,7 +83,7 @@ public class DownloadUtils extends Thread {
 	}
 	
 	public static String getStaticDropboxLink(String file) {
-		String resolved = ("https://dl.dropbox.com/u/61847240/FTBOP/");
+		String resolved = ("http://dl.dropbox.com/u/61847240/MultisLauncher/");
 		resolved += file;
 		HttpURLConnection connection = null;
 		try {

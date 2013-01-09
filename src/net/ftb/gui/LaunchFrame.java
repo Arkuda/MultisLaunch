@@ -114,7 +114,7 @@ public class LaunchFrame extends JFrame {
 	public TexturepackPane tpPane;
 	public OptionsPane optionsPane;
 
-	public static int buildNumber = 199;
+	public static int buildNumber = 120;
 	public static boolean noConfig = false;
 	public static LauncherConsole con;
 	public static String tempPass = "";
@@ -136,16 +136,16 @@ public class LaunchFrame extends JFrame {
 	 * @param args - CLI arguments
 	 */
 	public static void main(String[] args) {
-		AnalyticsConfigData config = new AnalyticsConfigData("UA-37330489-2");
+		AnalyticsConfigData config = new AnalyticsConfigData("UA-37506789-1");
 		tracker = new JGoogleAnalyticsTracker(config, GoogleAnalyticsVersion.V_4_7_2, DispatchMode.MULTI_THREAD);
-		//tracker.setEnabled(true);
+		tracker.setEnabled(true);
 
 		if(!Settings.getSettings().getSnooper()) {
-			tracker.trackPageViewFromReferrer("net/ftb/gui/LaunchFrame.java", "Launcher Start", "Feed The Beast", "http://www.feed-the-beast.com", "/");
+			tracker.trackPageViewFromReferrer("net/ftb/gui/LaunchFrame.java", "MultisLauncher start", "MultisLauncher", "http://vk.com/vanyvideo", "/");
 		}
 
-		if(new File(Settings.getSettings().getInstallPath(), "FTBLauncherLog.txt").exists()) {
-			new File(Settings.getSettings().getInstallPath(), "FTBLauncherLog.txt").delete();
+		if(new File(Settings.getSettings().getInstallPath(), "MultisLauncherLog.txt").exists()) {
+			new File(Settings.getSettings().getInstallPath(), "MultisLauncherLog.txt").delete();
 		}
 		if(new File(Settings.getSettings().getInstallPath(), "MinecraftLog.txt").exists()) {
 			new File(Settings.getSettings().getInstallPath(), "MinecraftLog.txt").delete();
@@ -155,7 +155,8 @@ public class LaunchFrame extends JFrame {
 		thread.start();
 
 		Logger.logInfo("You have quastion ? Ask me - reyzor2142@gmail.com");
-		Logger.logInfo("FTBLaunch Offline Play starting up (version "+ version + ")");
+		Logger.logInfo("Forck me on github: https://github.com/Arkuda/MultisLaunch");
+		Logger.logInfo("MultisLaucnher starting up (version "+ version + ")");
 		Logger.logInfo("Java version: "+System.getProperty("java.version"));
 		Logger.logInfo("Java vendor: "+System.getProperty("java.vendor"));
 		Logger.logInfo("Java home: "+System.getProperty("java.home"));
