@@ -6,11 +6,14 @@
 package net.ftb.gui;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -37,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitor;
@@ -272,7 +276,6 @@ public class LaunchFrame extends JFrame {
 			@Override public void windowIconified(WindowEvent arg0) { }
 			@Override public void windowOpened(WindowEvent arg0) { }
 		});
-
 		//Footer
 		footerLogo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		footerLogo.setBounds(20, 20, 42, 42);
@@ -320,6 +323,8 @@ public class LaunchFrame extends JFrame {
 		donate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String message= "first string\n" + "second string\n" + "third string";
+				JOptionPane.showMessageDialog(null,message);
 			}
 		});
 
