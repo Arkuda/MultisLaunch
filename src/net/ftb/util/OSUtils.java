@@ -1,3 +1,6 @@
+////////////////////
+//THIS FILE EDITED//
+////////////////////
 package net.ftb.util;
 
 import java.awt.Desktop;
@@ -46,11 +49,11 @@ public class OSUtils {
 	public static String getDynamicStorageLocation() {
 		switch(getCurrentOS()) {
 		case WINDOWS:
-			return System.getenv("APPDATA") + "/ftblauncher/";
+			return System.getenv("APPDATA") + "/multislauncher/";
 		case MACOSX:
-			return System.getProperty("user.home") + "/Library/Application Support/ftblauncher/";
+			return System.getProperty("user.home") + "/Library/Application Support/multislauncher/";
 		case UNIX:
-			return System.getProperty("user.home") + "/.ftblauncher/";
+			return System.getProperty("user.home") + "/.multislauncher/";
 		default:
 			return getDefInstallPath() + "/temp/";
 		}
