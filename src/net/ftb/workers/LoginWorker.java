@@ -20,11 +20,11 @@ public class LoginWorker extends SwingWorker<String, Void> {
 	private String username, password;
 	private boolean ispremium;
 
-	public LoginWorker(String username, String password, boolean ispremium) {
+	public LoginWorker(String username, String password, boolean _ispremium) {
 		super();
 		this.username = username;
 		this.password = password;
-		this.ispremium = ispremium;
+		this.ispremium = _ispremium;
 	}
 
 	@Override

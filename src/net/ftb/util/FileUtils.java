@@ -107,7 +107,7 @@ public class FileUtils {
 				
 				zipinputstream.closeEntry();
 				zipentry = zipinputstream.getNextEntry();
-				Logger.logError("unziping");
+				//Logger.logError("unziping");
 			}
 		} catch (Exception e) {
 			Logger.logError(e.getMessage(), e);

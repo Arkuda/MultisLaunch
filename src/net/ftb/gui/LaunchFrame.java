@@ -239,7 +239,7 @@ public class LaunchFrame extends JFrame {
 	public LaunchFrame(final int tab) {
 		setFont(new Font("a_FuturaOrto", Font.PLAIN, 12));
 		setResizable(false);
-		setTitle("Feed the Beast Launcher v" + version);
+		setTitle("MultisLauncher v" + version);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/image/logo_ftb.png")));
 
 		panel = new JPanel();
@@ -531,13 +531,15 @@ public class LaunchFrame extends JFrame {
 
 		boolean isPremium;
 		
-		if(password == "pirate") //TODO: THIS IS PIRATE !!!!!!!!!!!
+		if(password.equalsIgnoreCase("pirate")) //TODO: THIS IS PREMIUM TESTER !!!!!!!!!!!
 		{ 
 			isPremium = false;
+			//Logger.logError(" Iohoho: " + password);
 		}
 		else
 		{
 			isPremium = true;
+			//Logger.logError(" PREMIUM: " + password);
 		}
 		
 		
