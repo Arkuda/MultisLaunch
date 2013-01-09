@@ -279,7 +279,7 @@ public class LaunchFrame extends JFrame {
 		footerLogo.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				OSUtils.browse("http://vk.com/vanyvideo");
+				OSUtils.browse("http://multislauncher.tk");
 			}
 			@Override public void mouseReleased(MouseEvent arg0) { }
 			@Override public void mousePressed(MouseEvent arg0) { }
@@ -315,7 +315,7 @@ public class LaunchFrame extends JFrame {
 
 		donate = new JButton(I18N.getLocaleString("DONATE_BUTTON"));
 		donate.setBounds(390, 20, 80, 30);
-		donate.setEnabled(false);
+		donate.setEnabled(true);
 		donate.setToolTipText("Coming Soon...");
 		donate.addActionListener(new ActionListener() {
 			@Override
