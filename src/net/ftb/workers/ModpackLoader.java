@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -33,13 +34,17 @@ public class ModpackLoader extends Thread {
 		for(String xmlFile : xmlFiles) {
 			boolean privatePack = !xmlFile.equalsIgnoreCase("modpacks.xml");
 			File modPackFile = new File(OSUtils.getDynamicStorageLocation(), "ModPacks" + File.separator + xmlFile);
+			File addmodPackFile = new File(OSUtils.getDynamicStorageLocation(), "ModPacks" + File.separator +"add" + xmlFile);
 			try {
 				modPackFile.getParentFile().mkdirs();
+				
 				DownloadUtils.downloadToFile(new URL(DownloadUtils.getStaticCreeperhostLink(xmlFile)), modPackFile);
+				DownloadUtils.downloadToFile(new URL(DownloadUtils.getStaticDropboxLink(xmlFile)), addmodPackFile);
 			
 			} catch (IOException e) {
-				Logger.logWarn("Failed to load modpacks, loading from backup", e);
+					Logger.logWarn("Failed to load modpacks from creeperhost, loading from backup :)", e);			
 			}
+			
 			Logger.logInfo("Loading modpack information for " + xmlFile + "...");
 			InputStream modPackStream = null;
 			InputStream modPackSubSrtring = null;
@@ -47,7 +52,7 @@ public class ModpackLoader extends Thread {
 			
 			try {
 				modPackStream = new FileInputStream(modPackFile);
-				modPackSubSrtring = new URL(DownloadUtils.getStaticDropboxLink(xmlFile)).openStream();
+				modPackSubSrtring = new FileInputStream(addmodPackFile);
 				
 			} catch (IOException e) {
 				Logger.logWarn("Failed to read modpack file - falling back to direct download", e);

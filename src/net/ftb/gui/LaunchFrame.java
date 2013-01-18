@@ -118,7 +118,7 @@ public class LaunchFrame extends JFrame {
 	public TexturepackPane tpPane;
 	public OptionsPane optionsPane;
 
-	public static int buildNumber = 120;
+	public static int buildNumber = 121;
 	public static boolean noConfig = false;
 	public static LauncherConsole con;
 	public static String tempPass = "";
@@ -1045,6 +1045,6 @@ public class LaunchFrame extends JFrame {
 			Logger.logError(e.getMessage(), e);
 		}
 
-		return 1337;
+		return 0;
 	}
 }
