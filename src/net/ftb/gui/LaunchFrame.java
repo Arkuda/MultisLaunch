@@ -106,7 +106,7 @@ public class LaunchFrame extends JFrame {
 	private static String[] dropdown_ = {"Select Profile", "Create Profile"};
 	private static JComboBox users, tpInstallLocation, mapInstallLocation;
 	private static LaunchFrame instance = null;
-	private static String version = "1.2.1";
+	private static String version = "1.2.2";
 	private static final long serialVersionUID = 1L;
 
 	public final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);	
@@ -118,7 +118,7 @@ public class LaunchFrame extends JFrame {
 	public TexturepackPane tpPane;
 	public OptionsPane optionsPane;
 
-	public static int buildNumber = 121;
+	public static int buildNumber = 122;
 	public static boolean noConfig = false;
 	public static LauncherConsole con;
 	public static String tempPass = "";
@@ -471,7 +471,7 @@ public class LaunchFrame extends JFrame {
 		tabbedPane.add(modPacksPane, 2);
 		tabbedPane.add(mapsPane, 3);
 		tabbedPane.add(tpPane, 4);
-		tabbedPane.setEnabledAt(4, false);
+		//tabbedPane.setEnabledAt(4, false);
 		setNewsIcon();
 		tabbedPane.setIconAt(1, new ImageIcon(this.getClass().getResource("/image/tabs/options.png")));
 		tabbedPane.setIconAt(2, new ImageIcon(this.getClass().getResource("/image/tabs/modpacks.png")));
@@ -830,7 +830,8 @@ public class LaunchFrame extends JFrame {
 	 * @return - Outputs selected texturepack index
 	 */
 	public static int getSelectedTexturePackIndex() {
-		return instance.tpPane.getSelectedTexturePackIndex();
+		return 0;
+		//return instance.tpPane.getSelectedTexturePackIndex();
 	}
 
 	/**
@@ -901,7 +902,7 @@ public class LaunchFrame extends JFrame {
 		serverbutton.setVisible(false);
 		launch.setVisible(false);
 		edit.setVisible(false);
-		users.setVisible(false);
+		users.setVisible(false); 
 	}
 
 	/**
@@ -918,7 +919,7 @@ public class LaunchFrame extends JFrame {
 	 */
 	public void disableTextureButtons() {
 		tpInstall.setVisible(false);
-		tpInstallLocation.setVisible(false);
+		tpInstallLocation.setVisible(false)	;
 	}
 
 	/**
@@ -933,11 +934,11 @@ public class LaunchFrame extends JFrame {
 			mapInstallLocation.setVisible(!result);
 			serverMap.setVisible(result);
 			disableMainButtons();
-			disableTextureButtons();
+			//disableTextureButtons();
 			break;
 		case TEXTURE:
-			tpInstall.setVisible(true);
-			tpInstallLocation.setVisible(true);
+			tpInstall.setVisible(false);
+			tpInstallLocation.setVisible(false);
 			disableMainButtons();
 			disableMapButtons();
 			break;
@@ -949,7 +950,7 @@ public class LaunchFrame extends JFrame {
 			users.setVisible(!result);
 			serverbutton.setVisible(result);
 			disableMapButtons();
-			disableTextureButtons();
+			//disableTextureButtons();
 			break;
 		}
 	}
@@ -989,7 +990,7 @@ public class LaunchFrame extends JFrame {
 		optionsPane.updateLocale();
 		modPacksPane.updateLocale();
 		mapsPane.updateLocale();
-		tpPane.updateLocale();
+		//tpPane.updateLocale();
 	}
 
 	private static ArrayList<String> getXmls() {

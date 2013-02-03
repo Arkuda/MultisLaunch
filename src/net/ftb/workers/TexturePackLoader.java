@@ -20,7 +20,7 @@ public class TexturePackLoader extends Thread {
 
 	@Override
 	public void run() {
-		try {
+		/*try {
 			Logger.logInfo("loading texture pack information...");
 
 			TEXTUREPACKFILE = DownloadUtils.getStaticCreeperhostLink("texturepack.xml");
@@ -43,5 +43,6 @@ public class TexturePackLoader extends Thread {
 		} catch (Exception e) { 
 			Logger.logError(e.getMessage(), e);
 		}
-	}
+	*/
+		}
 }

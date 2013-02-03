@@ -14,7 +14,7 @@ import net.ftb.gui.LaunchFrame;
 import net.ftb.gui.panes.TexturepackPane;
 
 public class FilterDialogTextures extends JDialog {
-	private JPanel panel = new JPanel();
+	/*private JPanel panel = new JPanel();
 	private JLabel typeLbl = new JLabel("Mod Pack Type:"), originLbl = new JLabel("Mod Pack Origin:"), packLbl = new JLabel("Compatible Pack:");
 	private JComboBox typeBox = new JComboBox(new String[] {"Client", "Server"}), originBox = new JComboBox(new String[] {"All", "FTB", "3rd Party"}), compatibleBox;
 	private JButton applyButton = new JButton("Apply Filter"), cancelButton = new JButton("Cancel"), searchButton = new JButton("Search Packs");
@@ -75,4 +75,6 @@ public class FilterDialogTextures extends JDialog {
 		panel.add(cancelButton);
 		panel.add(searchButton);
 	}
+
+*/
 }

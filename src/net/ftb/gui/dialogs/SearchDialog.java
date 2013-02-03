@@ -69,7 +69,7 @@ public class SearchDialog extends JDialog {
 	}
 
 	public SearchDialog(final TexturepackPane instance) {
-		super(LaunchFrame.getInstance(), true);
+		/*super(LaunchFrame.getInstance(), true);
 		setUpGui();
 		searchBar.setText((lastTextureSearch == null) ? "" : lastTextureSearch);
 		searchBar.getDocument().addDocumentListener(new DocumentListener() {
@@ -91,7 +91,7 @@ public class SearchDialog extends JDialog {
 				setVisible(false);
 			}
 		});
-	}
+	*/}
 
 	private void setUpGui() {
 		setTitle("Text Search Filter");
