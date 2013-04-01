@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.mclauncher;
 
 import java.applet.Applet;
@@ -9,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,31 +41,32 @@ public class MinecraftLauncher {
 	public static Process launchMinecraft(String workingDir, String username, String password, String forgename, String rmax) throws IOException {
 		String[] jarFiles = new String[] {"minecraft.jar", "lwjgl.jar", "lwjgl_util.jar", "jinput.jar" };
 		StringBuilder cpb = new StringBuilder("");
-		File tempDir = new File(new File(workingDir).getParentFile(), "instMods/");
-		if(tempDir.isDirectory()) {
-			for(String name : tempDir.list()) {
-				if(name.toLowerCase().contains("forge") && name.toLowerCase().endsWith(".zip")) {
-					if(!name.toLowerCase().equalsIgnoreCase(forgename)) {
-						if(new File(tempDir, forgename).exists()) {
-							new File(tempDir, name).delete();
+		File instModsDir = new File(new File(workingDir).getParentFile(), "instMods/");
+		if(instModsDir.isDirectory()) {
+			String[] files = instModsDir.list();
+			Arrays.sort(files);
+			for(String name : files) {
+				if(!name.equals(forgename)) {
+					if(name.toLowerCase().contains("forge") && name.toLowerCase().contains("minecraft") && name.toLowerCase().endsWith(".zip")) {
+						if(new File(instModsDir, forgename).exists()) {
+							if (!new File(instModsDir, forgename).equals(new File(instModsDir, name))) {
+								new File(instModsDir, name).delete();
+							}
 						} else {
-							new File(tempDir, name).renameTo(new File(tempDir, forgename));
+							new File(instModsDir, name).renameTo(new File(instModsDir, forgename));
 						}
-					}
-				}
-				if(!name.equalsIgnoreCase(forgename)) {
-					if(name.toLowerCase().endsWith(".zip") || name.toLowerCase().endsWith(".jar")) {
+					} else if(!name.equalsIgnoreCase(forgename) && (name.toLowerCase().endsWith(".zip") || name.toLowerCase().endsWith(".jar"))) {
 						cpb.append(OSUtils.getJavaDelimiter());
-						cpb.append(new File(tempDir, name).getAbsolutePath());
+						cpb.append(new File(instModsDir, name).getAbsolutePath());
 					}
 				}
 			}
 		} else {
-			Logger.logInfo("Not a directory.");
+			Logger.logInfo("Not loading any instMods (minecraft jar mods), as the directory does not exist.");
 		}
 
 		cpb.append(OSUtils.getJavaDelimiter());
-		cpb.append(new File(tempDir, forgename).getAbsolutePath());
+		cpb.append(new File(instModsDir, forgename).getAbsolutePath());
 
 		for(String jarFile : jarFiles) {
 			cpb.append(OSUtils.getJavaDelimiter());
@@ -57,7 +76,7 @@ public class MinecraftLauncher {
 		List<String> arguments = new ArrayList<String>();
 
 		String separator = System.getProperty("file.separator");
-		String path = System.getProperty("java.home") + separator + "bin" + separator + "java";
+		String path = System.getProperty("java.home") + separator + "bin" + separator + "java" + (OSUtils.getCurrentOS() == OSUtils.OS.WINDOWS ? "w" : "");
 		arguments.add(path);
 
 		setMemory(arguments, rmax);
@@ -65,11 +84,16 @@ public class MinecraftLauncher {
 		arguments.add("-XX:+UseConcMarkSweepGC");
 		arguments.add("-XX:+CMSIncrementalMode");
 		arguments.add("-XX:+AggressiveOpts");
+		arguments.add("-XX:+CMSClassUnloadingEnabled");
+		arguments.add("-XX:MaxPermSize=128m");
 
 		arguments.add("-cp");
 		arguments.add(System.getProperty("java.class.path") + cpb.toString());
 		
-		arguments.add(Settings.getSettings().getAdditionalJavaOptions());
+		String additionalOptions = Settings.getSettings().getAdditionalJavaOptions();
+		if (!additionalOptions.isEmpty()) {
+ 			Collections.addAll(arguments, additionalOptions.split("\\s+"));
+ 		}
 
 		arguments.add(MinecraftLauncher.class.getCanonicalName());
 		arguments.add(workingDir);
@@ -78,7 +102,7 @@ public class MinecraftLauncher {
 		arguments.add(username);
 		arguments.add(password);
 		arguments.add(ModPack.getSelectedPack().getName() + " v" + (Settings.getSettings().getPackVer().equalsIgnoreCase("recommended version") ? ModPack.getSelectedPack().getVersion() : Settings.getSettings().getPackVer()));
-		arguments.add(OSUtils.getDynamicStorageLocation() + "ModPacks" + separator + ModPack.getPack(ModpacksPane.getIndex()).getDir() + separator + ModPack.getPack(ModpacksPane.getIndex()).getLogoName());
+		arguments.add(OSUtils.getDynamicStorageLocation() + "ModPacks" + separator + ModPack.getSelectedPack().getDir() + separator + ModPack.getSelectedPack().getLogoName());
 
 		ProcessBuilder processBuilder = new ProcessBuilder(arguments);
 		processBuilder.redirectErrorStream(true);
@@ -114,35 +138,31 @@ public class MinecraftLauncher {
 		try {
 			System.out.println("Loading jars...");
 			String[] jarFiles = new String[] {"minecraft.jar", "lwjgl.jar", "lwjgl_util.jar", "jinput.jar" };
-			HashMap<Integer, File> map = new HashMap<Integer, File>();
-			int counter = 0;
+			ArrayList<File> classPathFiles = new ArrayList<File>();
 			File tempDir = new File(new File(basepath).getParentFile(), "instMods/");
 			if(tempDir.isDirectory()) {
 				for(String name : tempDir.list()) {
 					if(!name.equalsIgnoreCase(forgename)) {
 						if(name.toLowerCase().endsWith(".zip") || name.toLowerCase().endsWith(".jar")) {
-							map.put(counter, new File(tempDir, name));
-							counter++;
+							classPathFiles.add(new File(tempDir, name));
 						}
 					}
 				}
 			}
 
-			map.put(counter, new File(tempDir, forgename));
-			counter++;
+			classPathFiles.add(new File(tempDir, forgename));
 			for(String jarFile : jarFiles) {
-				map.put(counter, new File(new File(basepath, "bin"), jarFile));
-				counter++;
+				classPathFiles.add(new File(new File(basepath, "bin"), jarFile));
 			}	
 
-			URL[] urls = new URL[map.size()];
-			for(int i = 0; i < counter; i++) {
+			URL[] urls = new URL[classPathFiles.size()];
+			for(int i = 0; i < classPathFiles.size(); i++) {
 				try {
-					urls[i] = map.get(i).toURI().toURL();
+					urls[i] = classPathFiles.get(i).toURI().toURL();
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
-				System.out.println("Loading URL: " + urls[i].toString());
+				System.out.println("Added URL to classpath: " + urls[i].toString());
 			}
 
 			System.out.println("Loading natives...");
@@ -175,10 +195,6 @@ public class MinecraftLauncher {
 				break;
 			}
 
-			String[] mcArgs = new String[2];
-			mcArgs[0] = username;
-			mcArgs[1] = password;
-
 			String mcDir = mc.getMethod("a", String.class).invoke(null, (Object) "minecraft").toString();
 
 			System.out.println("MCDIR: " + mcDir);
@@ -189,11 +205,13 @@ public class MinecraftLauncher {
 				Class<?> MCAppletClass = cl.loadClass("net.minecraft.client.MinecraftApplet");
 				Applet mcappl = (Applet) MCAppletClass.newInstance();
 				MinecraftFrame mcWindow = new MinecraftFrame(modPackName, modPackImageName, animationname);
-				mcWindow.start(mcappl, mcArgs[0], mcArgs[1]);
+				mcWindow.start(mcappl, username, password);
 			} catch (InstantiationException e) {
 				Logger.log("Applet wrapper failed! Falling back to compatibility mode.", LogLevel.WARN, e);
-				mc.getMethod("main", String[].class).invoke(null, (Object) mcArgs);
+				mc.getMethod("main", String[].class).invoke(null, (Object) new String[] {username, password});
 			}
-		} catch (Exception e) { }
+		} catch (Throwable t) {
+			Logger.logError("Unhandled error launching minecraft", t);
+		}
 	}
 }

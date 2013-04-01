@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.gui;
 
 import java.awt.BorderLayout;
@@ -36,10 +52,10 @@ import net.ftb.log.LogWriter;
 import net.ftb.log.Logger;
 import net.ftb.tools.PastebinPoster;
 
+@SuppressWarnings("serial")
 public class LauncherConsole extends JFrame implements ILogListener {
-	private final static String launcherLogFile = "MultisLauncherLog.txt";
+	private final static String launcherLogFile = "FTBLauncherLog.txt";
 	private final static String minecraftLogFile = "MinecraftLog.txt";
-	private static final long serialVersionUID = 1L;
 	private final JEditorPane displayArea;
 	private final HTMLEditorKit kit;
 	private HTMLDocument doc;
@@ -142,7 +158,7 @@ public class LauncherConsole extends JFrame implements ILogListener {
 				if (Desktop.isDesktopSupported()) {
 					Desktop desktop = Desktop.getDesktop();
 					try {
-						desktop.browse(new URI("http://vk.com/vanyvideo"));
+						desktop.browse(new URI("http://support.feed-the-beast.com/?qa=hot"));
 					} catch (Exception exc) {
 						Logger.logError("Could not open url: " + exc.getMessage());
 					}
@@ -157,7 +173,7 @@ public class LauncherConsole extends JFrame implements ILogListener {
 		displayArea.setEditable(false);
 		kit = new HTMLEditorKit();
 		displayArea.setEditorKit(kit);
-		
+
 		JScrollPane scrollPane = new JScrollPane(displayArea);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -203,13 +219,13 @@ public class LauncherConsole extends JFrame implements ILogListener {
 	}
 
 	private String getMessage(LogEntry entry) {
-		String color = "#66ff00";
+		String color = "white";
 		switch(entry.level) {
 		case ERROR:
-			color = "#ff000";
+			color = "#FF7070";
 			break;
 		case WARN:
-			color = "#0099ff";
+			color = "yellow";
 		}
 		return "<font color=\"" + color + "\">" + (entry.toString(logType).replace("<", "&lt;").replace(">", "&gt;").trim().replace("\r\n","\n").replace("\n","<br/>")) + "</font><br/>";
 	}

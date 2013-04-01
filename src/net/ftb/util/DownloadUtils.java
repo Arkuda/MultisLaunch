@@ -1,7 +1,19 @@
-////////////////////////
-//THIS FILE BEEN MODED//
-////////////////////////
-
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.util;
 
 import java.io.BufferedReader;
@@ -23,6 +35,7 @@ import java.util.Scanner;
 
 import net.ftb.data.Settings;
 import net.ftb.gui.LaunchFrame;
+import net.ftb.gui.dialogs.AdvancedOptionsDialog;
 import net.ftb.log.Logger;
 
 public class DownloadUtils extends Thread {
@@ -78,10 +91,13 @@ public class DownloadUtils extends Thread {
 			}
 		} catch (IOException e) { }
 		connection.disconnect();
-		Logger.logInfo(resolved);
 		return resolved; 
 	}
-	
+
+	/**
+	 * @param file - the name of the file, as saved to the repo (including extension)
+	 * @return - the direct link
+	 */
 	public static String getStaticDropboxLink(String file) {
 		String resolved = ("http://dl.dropbox.com/u/61847240/MultisLauncher/");
 		resolved += file;
@@ -95,14 +111,36 @@ public class DownloadUtils extends Thread {
 		return resolved; 
 		
 	}
-
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * @param file - file on the repo in static
-	 * @return true if the file exists
+	 * @return boolean representing if the file exists 
 	 */
 	public static boolean staticFileExists(String file) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(getStaticCreeperhostLink(file)).openStream()));
+			return !reader.readLine().toLowerCase().contains("not found");
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	/**
+	 * @param file - file on the repo
+	 * @return boolean representing if the file exists 
+	 */
+	public static boolean fileExists(String file) {
+		try {
+			if(currentmd5.isEmpty()) {
+				currentmd5 = md5("mcepoch1" + getTime());
+			}
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://www.creeperrepo.net/direct/FTB2/" + currentmd5 + "/" + file).openStream()));
 			return !reader.readLine().toLowerCase().contains("not found");
 		} catch (Exception e) {
 			return false;
@@ -160,7 +198,6 @@ public class DownloadUtils extends Thread {
 				scanner.close();
 			}
 		}
-		Logger.logInfo(resolved);
 		return content;
 	}
 
@@ -209,30 +246,6 @@ public class DownloadUtils extends Thread {
 					}
 				}
 			}
-			scanner = new Scanner(connection.getInputStream());
-			scanner.useDelimiter( "\\Z" );
-			content = scanner.next();
-		} catch (IOException e) { 
-		} finally {
-			connection.disconnect();
-			if (scanner != null) {
-				scanner.close();
-			}
-		}
-		String result = fileMD5(file);
-		Logger.logInfo("Local: " + result.toUpperCase());
-		Logger.logInfo("Remote: " + content.toUpperCase());
-		return content.equalsIgnoreCase(result);
-	}
-	
-	public static boolean isValidD(File file, String url) throws IOException {
-		String content = null;
-		Scanner scanner = null;
-		String resolved = ("https://dl.dropbox.com/u/61847240/FTBOP/");
-		resolved += url;
-		HttpURLConnection connection = null;
-		try {
-			connection = (HttpURLConnection) new URL(resolved).openConnection();
 			scanner = new Scanner(connection.getInputStream());
 			scanner.useDelimiter( "\\Z" );
 			content = scanner.next();
@@ -306,7 +319,7 @@ public class DownloadUtils extends Thread {
 		}
 		serversLoaded = true;
 		if(LaunchFrame.getInstance() != null && LaunchFrame.getInstance().optionsPane != null) {
-			LaunchFrame.getInstance().optionsPane.setDownloadServers();
+			AdvancedOptionsDialog.setDownloadServers();
 		}
 	}
 }

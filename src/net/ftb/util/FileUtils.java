@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.util;
 
 import java.io.File;
@@ -90,24 +106,19 @@ public class FileUtils {
 			byte[] buf = new byte[1024];
 			zipinputstream = new ZipInputStream(new FileInputStream(zipLocation));
 			ZipEntry zipentry = zipinputstream.getNextEntry();
-			
 			while (zipentry != null) { 
-			
 				String entryName = zipentry.getName();
 				int n;
-				if(!zipentry.isDirectory() && !entryName.equalsIgnoreCase("minecraft") && !entryName.equalsIgnoreCase(".minecraft") && !entryName.equalsIgnoreCase("instMods") && !entryName.equalsIgnoreCase("mods") && !entryName.equalsIgnoreCase("config")) {
+				if(!zipentry.isDirectory() && !entryName.equalsIgnoreCase("minecraft") && !entryName.equalsIgnoreCase(".minecraft") && !entryName.equalsIgnoreCase("instMods")) {
 					new File(outputLocation + File.separator + entryName).getParentFile().mkdirs();
 					FileOutputStream fileoutputstream = new FileOutputStream(outputLocation + File.separator + entryName);             
 					while ((n = zipinputstream.read(buf, 0, 1024)) > -1) {
 						fileoutputstream.write(buf, 0, n);
-						
 					}
 					fileoutputstream.close();
 				}
-				
 				zipinputstream.closeEntry();
 				zipentry = zipinputstream.getNextEntry();
-				//Logger.logError("unziping");
 			}
 		} catch (Exception e) {
 			Logger.logError(e.getMessage(), e);
@@ -115,7 +126,6 @@ public class FileUtils {
 		} finally {
 			try {
 				zipinputstream.close();
-				Logger.logError("UNZIPING COMPLITE");
 			} catch (IOException e) { }
 		}
 	}

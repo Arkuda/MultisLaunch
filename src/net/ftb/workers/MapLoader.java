@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.workers;
 
 import java.net.URL;
@@ -14,7 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class MapLoader extends Thread {
-	private static String MAPFILE, ADDMAPFILE;
+	private static String MAPFILE;
 
 	public MapLoader() { }
 
@@ -23,22 +39,11 @@ public class MapLoader extends Thread {
 		try {
 			Logger.logInfo("loading map information...");
 			MAPFILE = DownloadUtils.getStaticCreeperhostLink("maps.xml");
-			ADDMAPFILE = DownloadUtils.getStaticDropboxLink("addmaps.xml");
-			
 			Document doc = AppUtils.downloadXML(new URL(MAPFILE));
-			Document adddoc = AppUtils.downloadXML(new URL(ADDMAPFILE));
-			
 			if(doc == null) {
 				Logger.logError("Error: Could not load map data!");
 			}
-			
-			if(adddoc == null) {
-				Logger.logError("Error: Could not load additional map data!");
-			}
-			
 			NodeList maps = doc.getElementsByTagName("map");
-			NodeList addmaps = adddoc.getElementsByTagName("map");
-			
 			for(int i = 0; i < maps.getLength(); i++) {
 				Node map = maps.item(i);
 				NamedNodeMap mapAttr = map.getAttributes();
@@ -48,20 +53,7 @@ public class MapLoader extends Thread {
 						mapAttr.getNamedItem("compatible").getTextContent(), mapAttr.getNamedItem("mcversion").getTextContent(), 
 						mapAttr.getNamedItem("mapname").getTextContent(), mapAttr.getNamedItem("description").getTextContent(), i));
 			}
-			
-			for(int i = 0; i < addmaps.getLength(); i++) {
-				Node map = maps.item(i);
-				NamedNodeMap mapAttr = map.getAttributes();
-				Map.addMap(new Map(mapAttr.getNamedItem("name").getTextContent(), mapAttr.getNamedItem("author").getTextContent(),
-						mapAttr.getNamedItem("version").getTextContent(), mapAttr.getNamedItem("url").getTextContent(),
-						mapAttr.getNamedItem("logo").getTextContent(), mapAttr.getNamedItem("image").getTextContent(),
-						mapAttr.getNamedItem("compatible").getTextContent(), mapAttr.getNamedItem("mcversion").getTextContent(), 
-						mapAttr.getNamedItem("mapname").getTextContent(), mapAttr.getNamedItem("description").getTextContent(), i));
-			}
-			
-			
 			MapsPane.loaded = true;
-			
 		} catch (Exception e) { 
 			Logger.logError(e.getMessage(), e);
 		}
