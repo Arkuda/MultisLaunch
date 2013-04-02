@@ -131,7 +131,7 @@ public class LaunchFrame extends JFrame {
 	public static LauncherConsole con;
 	public static String tempPass = "";
 	public static Panes currentPane = Panes.MODPACK;
-	public static JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(new AnalyticsConfigData("UA-37330489-2"), GoogleAnalyticsVersion.V_4_7_2);
+	public static JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(new AnalyticsConfigData(""), GoogleAnalyticsVersion.V_4_7_2);
 
 	public static final String FORGENAME = "MinecraftForge.zip";
 
@@ -151,8 +151,8 @@ public class LaunchFrame extends JFrame {
 		tracker.setEnabled(true);
 		TrackerUtils.sendPageView("net/ftb/gui/LaunchFrame.java", "Launcher Start v" + version);
 
-		if(new File(Settings.getSettings().getInstallPath(), "FTBLauncherLog.txt").exists()) {
-			new File(Settings.getSettings().getInstallPath(), "FTBLauncherLog.txt").delete();
+		if(new File(Settings.getSettings().getInstallPath(), "MultisLauncherLog.txt").exists()) {
+			new File(Settings.getSettings().getInstallPath(), "MultisLauncherLog.txt").delete();
 		}
 
 		if(new File(Settings.getSettings().getInstallPath(), "MinecraftLog.txt").exists()) {
@@ -162,7 +162,7 @@ public class LaunchFrame extends JFrame {
 		DownloadUtils thread = new DownloadUtils();
 		thread.start();
 		
-		Logger.logInfo("FTBLaunch starting up (version "+ version + ")");
+		Logger.logInfo("MultisLaunch starting up (version "+ version + ")");
 		Logger.logInfo("Java version: "+System.getProperty("java.version"));
 		Logger.logInfo("Java vendor: "+System.getProperty("java.vendor"));
 		Logger.logInfo("Java home: "+System.getProperty("java.home"));
@@ -217,12 +217,14 @@ public class LaunchFrame extends JFrame {
 						FileOutputStream fos = new FileOutputStream(credits);
 						OutputStreamWriter osw = new OutputStreamWriter(fos);
 						
-						osw.write("FTB Launcher and Modpack Credits " + System.getProperty("line.separator"));
+						osw.write("Multis Launcher, FTB Launcher and Modpack Credits " + System.getProperty("line.separator"));
 						osw.write("-------------------------------" + System.getProperty("line.separator"));
 						osw.write("Launcher Developers:" + System.getProperty("line.separator"));
 						osw.write("jjw123" + System.getProperty("line.separator"));
 						osw.write("unv_annihilator" + System.getProperty("line.separator"));
 						osw.write("Vbitz" + System.getProperty("line.separator") + System.getProperty("line.separator"));
+						osw.write("Arkuda63" + System.getProperty("line.separator"));
+						osw.write("Ga2mer" + System.getProperty("line.separator"));
 						osw.write("Web Developers:" + System.getProperty("line.separator"));
 						osw.write("captainnana" + System.getProperty("line.separator"));
 						osw.write("Rob" + System.getProperty("line.separator") + System.getProperty("line.separator"));
@@ -230,6 +232,7 @@ public class LaunchFrame extends JFrame {
 						osw.write("CWW256" + System.getProperty("line.separator"));
 						osw.write("Lathanael" + System.getProperty("line.separator"));
 						osw.write("Watchful11" + System.getProperty("line.separator"));
+						
 						
 						osw.flush();
 						
@@ -283,7 +286,7 @@ public class LaunchFrame extends JFrame {
 	public LaunchFrame(final int tab) {
 		setFont(new Font("a_FuturaOrto", Font.PLAIN, 12));
 		setResizable(false);
-		setTitle("Feed the Beast Launcher v" + version);
+		setTitle("MultisLauncher v" + version);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/image/logo_ftb.png")));
 
 		panel = new JPanel();
@@ -310,7 +313,7 @@ public class LaunchFrame extends JFrame {
 		footerLogo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				OSUtils.browse("http://www.feed-the-beast.com");
+				OSUtils.browse("http://vk.com/topic-40178492_28068985");
 			}
 		});
 
@@ -319,7 +322,7 @@ public class LaunchFrame extends JFrame {
 		footerCreeper.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				OSUtils.browse("http://www.creeperhost.net/aff.php?aff=293");
+				OSUtils.browse("http://vk.com/vanyvideo");
 			}
 		});
 
