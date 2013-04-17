@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.data;
 
 import java.awt.Image;
@@ -24,7 +40,7 @@ import net.ftb.util.OSUtils;
 import net.ftb.workers.ModpackLoader;
 
 public class ModPack {	
-	private String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, sep = File.separator, xml,isOp;
+	public String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, sep = File.separator, xml, isOp;
 	private String[] mods, oldVersions;
 	private Image logo, image;
 	private int index;
@@ -99,11 +115,27 @@ public class ModPack {
 	}
 
 	/**
+	 * Returns the number of available ModPacks.
+	 */
+	public static int size() {
+		return packs.size();
+	}
+
+	public static ModPack getPack(String dir) {
+		for(ModPack pack : packs) {
+			if(pack.getDir().equalsIgnoreCase(dir)) {
+				return pack;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Used to grab the currently selected ModPack based off the selected index from ModPacksPane
 	 * @return ModPack - the currently selected ModPack
 	 */
 	public static ModPack getSelectedPack() {
-		return getPack(ModpacksPane.getIndex());
+		return getPack(ModpacksPane.getSelectedModIndex());
 	}
 
 	/**
@@ -182,7 +214,6 @@ public class ModPack {
 			if(new File(tempDir, logo).exists()) {
 				this.logo = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + logo);
 			} else {
-				
 				if(isOp == "true")
 				{
 					url_ = new URL(DownloadUtils.getStaticDropboxLink(logo));
@@ -191,8 +222,6 @@ public class ModPack {
 				{
 					url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
 				}
-				
-				
 				this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -302,18 +331,6 @@ public class ModPack {
 		return image;
 	}
 
-	
-	public boolean getisOp() {
-		if(isOp == "true")
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
 	/**
 	 * Used to get the directory of the modpack
 	 * @return - the directory for the modpack

@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.data;
 
 import java.awt.Image;
@@ -17,17 +33,18 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.ftb.data.events.TexturePackListener;
+import net.ftb.gui.LaunchFrame;
+import net.ftb.gui.panes.TexturepackPane;
 import net.ftb.log.Logger;
 import net.ftb.util.DownloadUtils;
 import net.ftb.util.OSUtils;
 import net.ftb.workers.TexturePackLoader;
 
 public class TexturePack {
-	private String name, author, version, url, mcversion, logoName, imageName, info, sep = File.separator;
+	private String name, author, version, url, mcversion, logoName, imageName, info, resolution, sep = File.separator;
 	private Image logo, image;
 	private String[] compatible;
 	private int index;
-
 	private final static ArrayList<TexturePack> texturePacks = new ArrayList<TexturePack>();
 	private static List<TexturePackListener> listeners = new ArrayList<TexturePackListener>();
 
@@ -57,7 +74,19 @@ public class TexturePack {
 		return texturePacks.get(i);
 	}
 
-	public TexturePack(String name, String author, String version, String url, String logo, String image, String mcversion, String compatible, String info, int idx) throws NoSuchAlgorithmException, IOException {
+	public static int size() {
+		return texturePacks.size();
+	}
+
+	/**
+	 * Used to grab the currently selected TexturePack based off the selected index from TexturepackPane
+	 * @return TexturePack - the currently selected TexturePack
+	 */
+	public static TexturePack getSelectedTexturePack() {
+		return getTexturePack(TexturepackPane.getSelectedTexturePackIndex());
+	}
+
+	public TexturePack(String name, String author, String version, String url, String logo, String image, String mcversion, String compatible, String info, String resolution, int idx) throws NoSuchAlgorithmException, IOException {
 		index = idx;
 		this.name = name;
 		this.author = author;
@@ -69,6 +98,7 @@ public class TexturePack {
 		imageName = image;
 		this.compatible = compatible.split(",");
 		this.info = info;
+		this.resolution = resolution;
 		File tempDir = new File(installPath, "TexturePacks" + sep + name);
 		File verFile = new File(tempDir, "version");
 		URL url_;
@@ -115,7 +145,7 @@ public class TexturePack {
 			}
 			BufferedReader in = new BufferedReader(new FileReader(verFile));
 			String line;
-			if((line = in.readLine()) == null || Integer.parseInt(version) > Integer.parseInt(line)) {
+			if((line = in.readLine()) == null || Integer.parseInt(version.replace(".", "")) > Integer.parseInt(line.replace(".", ""))) {
 				BufferedWriter out = new BufferedWriter(new FileWriter(verFile));
 				out.write(version);
 				out.flush();
@@ -176,10 +206,22 @@ public class TexturePack {
 	public String[] getCompatible() {
 		return compatible;
 	}
+	
+	public String getResolution() {
+		return resolution;
+	}
 
-	public boolean isCompatible(String dir) {
+	/**
+	 * Used to get the selected mod pack
+	 * @return - the compatible pack based on the selected texture pack
+	 */
+	public String getSelectedCompatible() {
+		return compatible[LaunchFrame.getSelectedTPInstallIndex()].trim();
+	}
+
+	public boolean isCompatible(String packName) {
 		for (String aCompatible : compatible) {
-			if (aCompatible.equalsIgnoreCase(dir)) {
+			if (ModPack.getPack(aCompatible).getName().equals(packName)) {
 				return true;
 			}
 		}

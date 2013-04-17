@@ -1,7 +1,23 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.tools;
 
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -31,7 +47,9 @@ import net.ftb.util.DownloadUtils;
 import net.ftb.util.ErrorUtils;
 import net.ftb.util.FileUtils;
 import net.ftb.util.OSUtils;
+import net.ftb.util.TrackerUtils;
 
+@SuppressWarnings("serial")
 public class ModManager extends JDialog {
 	public static boolean update = false, backup = false, erroneous = false, upToDate = false;
 	private static String curVersion = "";
@@ -87,39 +105,44 @@ public class ModManager extends JDialog {
 				in.close();
 				fout.flush();
 				fout.close();
-				Logger.logError("COMPLITE DOWNLOADING");
-				
 			}
 		}
 
 		protected boolean downloadModPack(String modPackName, String dir) throws IOException, NoSuchAlgorithmException {
-			Logger.logInfo("Downloading mod pack.");			
+			Logger.logInfo("Downloading Mod Pack");
+			TrackerUtils.sendPageView("net/ftb/tools/ModManager.java", "Downloaded: " + modPackName + " v." + curVersion.replace('_', '.'));
 			String dynamicLoc = OSUtils.getDynamicStorageLocation();
 			String installPath = Settings.getSettings().getInstallPath();
 			ModPack pack = ModPack.getSelectedPack();
 			String baseLink = (pack.isPrivatePack() ? "privatepacks%5E" + dir + "%5E" + curVersion + "%5E" : "modpacks%5E" + dir + "%5E" + curVersion + "%5E");
-			File baseDynamic = new File(dynamicLoc, "ModPacks" + sep + dir + sep);
+			
+			File baseDynamic = null;
+			baseDynamic = new File(dynamicLoc,"ModPacks" + sep + dir + sep);
 			baseDynamic.mkdirs();
 			new File(baseDynamic, modPackName).createNewFile();
-
-			if(pack.getisOp()){
-				downloadUrl(baseDynamic.getPath() + sep + modPackName, DownloadUtils.getStaticDropboxLink(pack.getUrl()));
+			if(pack.isOp == "true")
+			{
+				downloadUrl(baseDynamic.getPath() + sep + modPackName, DownloadUtils.getStaticDropboxLink(modPackName));
+				
 				String animation = pack.getAnimation();
-				
-				Logger.logError("unziping");
-				
-				FileUtils.extractZipTo(baseDynamic.getPath() + sep + modPackName, baseDynamic.getPath());
-				clearModsFolder(pack);
-				//	FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
-				//	FileUtils.delete(new File(installPath, dir + "/instMods/"));
-				File version = new File(installPath, dir + sep + "version");
-				BufferedWriter out = new BufferedWriter(new FileWriter(version));
-				out.write(curVersion.replace("_", "."));
-				out.flush();
-				out.close();
-				Logger.logWarn("unziping end");
-				return true;
-
+				if(!animation.equalsIgnoreCase("empty")) {
+					downloadUrl(baseDynamic.getPath() + sep + animation, DownloadUtils.getStaticDropboxLink(baseLink + animation));
+				}
+				if(DownloadUtils.isValid(new File(baseDynamic, modPackName), baseLink + modPackName)) {
+					FileUtils.extractZipTo(baseDynamic.getPath() + sep + modPackName, baseDynamic.getPath());
+					clearModsFolder(pack);
+					FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
+					FileUtils.delete(new File(installPath, dir + "/instMods/"));
+					File version = new File(installPath, dir + sep + "version");
+					BufferedWriter out = new BufferedWriter(new FileWriter(version));
+					out.write(curVersion.replace("_", "."));
+					out.flush();
+					out.close();
+					return true;
+				} else {
+					ErrorUtils.tossError("Error downloading modpack!!!");
+					return false;
+				}				
 			}
 			else
 			{
@@ -128,32 +151,24 @@ public class ModManager extends JDialog {
 				if(!animation.equalsIgnoreCase("empty")) {
 					downloadUrl(baseDynamic.getPath() + sep + animation, DownloadUtils.getCreeperhostLink(baseLink + animation));
 				}
-
-					if(DownloadUtils.isValid(new File(baseDynamic, modPackName), baseLink + modPackName)) {
-						FileUtils.extractZipTo(baseDynamic.getPath() + sep + modPackName, baseDynamic.getPath());
-						clearModsFolder(pack);
-						FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
-						FileUtils.delete(new File(installPath, dir + "/instMods/"));
-						File version = new File(installPath, dir + sep + "version");
-						BufferedWriter out = new BufferedWriter(new FileWriter(version));
-						out.write(curVersion.replace("_", "."));
-						out.flush();
-						out.close();
-						Logger.logError("PAKEGE ISNT OP");
-						return true;
-					} else {
-						ErrorUtils.tossError("Error downloading modpack!!!");
-						return false;
-
-					}
+				if(DownloadUtils.isValid(new File(baseDynamic, modPackName), baseLink + modPackName)) {
+					FileUtils.extractZipTo(baseDynamic.getPath() + sep + modPackName, baseDynamic.getPath());
+					clearModsFolder(pack);
+					FileUtils.delete(new File(installPath, dir + "/minecraft/coremods"));
+					FileUtils.delete(new File(installPath, dir + "/instMods/"));
+					File version = new File(installPath, dir + sep + "version");
+					BufferedWriter out = new BufferedWriter(new FileWriter(version));
+					out.write(curVersion.replace("_", "."));
+					out.flush();
+					out.close();
+					return true;
+				} else {
+					ErrorUtils.tossError("Error downloading modpack!!!");
+					return false;
 				}
-				
 			}
-			
 		}
-
-
-
+	}
 
 	/**
 	 * Create the frame.
@@ -182,7 +197,7 @@ public class ModManager extends JDialog {
 		label.setBounds(0, 42, 313, 14);
 		contentPane.add(label);
 
-		addWindowListener(new WindowListener() {
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				ModManagerWorker worker = new ModManagerWorker() {
@@ -194,12 +209,6 @@ public class ModManager extends JDialog {
 				};
 				worker.execute();
 			}
-			@Override public void windowActivated(WindowEvent e) { }
-			@Override public void windowClosed(WindowEvent e) { }
-			@Override public void windowClosing(WindowEvent e) { }
-			@Override public void windowDeactivated(WindowEvent e) { }
-			@Override public void windowDeiconified(WindowEvent e) { }
-			@Override public void windowIconified(WindowEvent e) { }
 		});
 	}
 

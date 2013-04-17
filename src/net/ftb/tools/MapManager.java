@@ -1,7 +1,23 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.tools;
 
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,10 +43,10 @@ import net.ftb.log.Logger;
 import net.ftb.util.DownloadUtils;
 import net.ftb.util.FileUtils;
 import net.ftb.util.OSUtils;
+import net.ftb.util.TrackerUtils;
 
+@SuppressWarnings("serial")
 public class MapManager extends JDialog {
-	private static final long serialVersionUID = 6897832855341265019L;
-
 	private JPanel contentPane;
 	private double downloadedPerc;
 	private final JProgressBar progressBar;
@@ -42,9 +58,9 @@ public class MapManager extends JDialog {
 		@Override
 		protected Boolean doInBackground() throws Exception {
 			String installPath = Settings.getSettings().getInstallPath();
-			Map map = Map.getMap(LaunchFrame.getSelectedMapIndex());
+			Map map = Map.getSelectedMap();
 			if(new File(installPath, map.getSelectedCompatible() + "/minecraft/saves/" + map.getMapName()).exists()) {
-				MapOverwriteDialog dialog = new MapOverwriteDialog(LaunchFrame.getInstance(), true);
+				MapOverwriteDialog dialog = new MapOverwriteDialog();
 				dialog.setVisible(true);
 				if(overwrite) {
 					FileUtils.delete(new File(installPath, map.getSelectedCompatible() + "/minecraft/saves/" + map.getMapName()));
@@ -86,23 +102,25 @@ public class MapManager extends JDialog {
 		}
 
 		protected void downloadMap(String mapName, String dir) throws IOException, NoSuchAlgorithmException {
-			Logger.logInfo("Downloading");
+			Logger.logInfo("Downloading Map");
 			String installPath = OSUtils.getDynamicStorageLocation();
+			Map map = Map.getSelectedMap();
 			new File(installPath + "/Maps/" + dir + "/").mkdirs();
 			new File(installPath + "/Maps/" + dir + "/" + mapName).createNewFile();
-			downloadUrl(installPath + "/Maps/" + dir + "/" + mapName, DownloadUtils.getCreeperhostLink("maps%5E" + mapName));
+			downloadUrl(installPath + "/Maps/" + dir + "/" + mapName, DownloadUtils.getCreeperhostLink("maps%5E" + dir + "%5E" + map.getVersion().replace(".", "_") + "%5E" + mapName));
 			FileUtils.extractZipTo(installPath + "/Maps/" + dir + "/" + mapName, installPath + "/Maps/" + dir);
 			installMap(mapName, dir);
 		}
 
 		protected void installMap(String mapName, String dir) throws IOException {
-			Logger.logInfo("Installing");
+			Logger.logInfo("Installing Map");
 			String installPath = Settings.getSettings().getInstallPath();
 			String tempPath = OSUtils.getDynamicStorageLocation();
-			Map map = Map.getMap(LaunchFrame.getSelectedMapIndex());
+			Map map = Map.getSelectedMap();
 			new File(installPath, map.getSelectedCompatible() + "/minecraft/saves/" + dir).mkdirs();
 			FileUtils.copyFolder(new File(tempPath, "Maps/" + dir + "/" + dir), new File(installPath, map.getSelectedCompatible() + "/minecraft/saves/" + dir));
 			FileUtils.copyFile(new File(tempPath, "Maps/" + dir + "/" + "version"), new File(installPath, map.getSelectedCompatible() + "/minecraft/saves/" + dir + "/version"));
+			TrackerUtils.sendPageView(map.getName() + " Install", map.getName());
 		}
 	}
 
@@ -131,7 +149,7 @@ public class MapManager extends JDialog {
 		label.setBounds(0, 42, 313, 14);
 		contentPane.add(label);
 
-		addWindowListener(new WindowListener() {
+		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent arg0) {
 				MapManagerWorker worker = new MapManagerWorker() {
@@ -143,12 +161,6 @@ public class MapManager extends JDialog {
 				};
 				worker.execute();
 			}
-			@Override public void windowActivated(WindowEvent e) { }
-			@Override public void windowClosed(WindowEvent e) { }
-			@Override public void windowClosing(WindowEvent e) { }
-			@Override public void windowDeactivated(WindowEvent e) { }
-			@Override public void windowDeiconified(WindowEvent e) { }
-			@Override public void windowIconified(WindowEvent e) { }
 		});
 	}
 

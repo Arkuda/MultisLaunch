@@ -1,3 +1,19 @@
+/*
+ * This file is part of FTB Launcher.
+ *
+ * Copyright © 2012-2013, FTB Launcher Contributors <https://github.com/Slowpoke101/FTBLaunch/>
+ * FTB Launcher is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.ftb.data;
 
 import java.awt.Dimension;
@@ -23,6 +39,7 @@ import net.ftb.gui.LaunchFrame;
 import net.ftb.log.Logger;
 import net.ftb.util.OSUtils;
 
+@SuppressWarnings("serial")
 public class Settings extends Properties {
 	private static Settings settings;
 	private File configFile;
@@ -80,11 +97,11 @@ public class Settings extends Properties {
 	public void setInstallPath(String path) {
 		setProperty("installPath", path);
 	}
-	
+
 	public String getStyle() {
 		return getProperty("style", "defaultStyle.cfg");
 	}
-	
+
 	public void setStyle(String path) {
 		setProperty("style", path);
 	}
@@ -143,6 +160,10 @@ public class Settings extends Properties {
 
 	public String getPackVer() {
 		return getProperty(ModPack.getSelectedPack().getDir(), "Recommended Version");
+	}
+
+	public String getPackVer(String packDir) {
+		return getProperty(packDir, "Recommended Version");
 	}
 
 	public String getLastAddPath() {
@@ -228,10 +249,18 @@ public class Settings extends Properties {
 		return Boolean.parseBoolean(getProperty("snooperDisable", "false"));
 	}
 	
+	public void setLoaded(boolean state) {
+		setProperty("loaded", String.valueOf(state));
+	}
+
+	public boolean getLoaded() {
+		return Boolean.parseBoolean(getProperty("loaded", "false"));
+	}
+
 	public String getAdditionalJavaOptions() {
 		return getProperty("additionalJavaOptions", "");
 	}
-	
+
 	public void setAdditionalJavaOptions(String opts) {
 		setProperty("additionalJavaOptions", opts);
 	}
