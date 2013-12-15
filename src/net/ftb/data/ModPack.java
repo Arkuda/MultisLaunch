@@ -40,7 +40,7 @@ import net.ftb.util.OSUtils;
 import net.ftb.workers.ModpackLoader;
 
 public class ModPack {	
-	public String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, sep = File.separator, xml, isOp;
+	private String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, maxPermSize, sep = File.separator, xml;
 	private String[] mods, oldVersions;
 	private Image logo, image;
 	private int index;
@@ -87,13 +87,20 @@ public class ModPack {
 
 	public static void removePacks(String xml) {
 		ArrayList<ModPack> remove = new ArrayList<ModPack>();
+		int removed = -1; // TODO: if private xmls ever contain more than one modpack, we need to change this
 		for(ModPack pack : packs) {
 			if(pack.getParentXml().equalsIgnoreCase(xml)) {
 				remove.add(pack);
 			}
 		}
 		for(ModPack pack : remove) {
+			removed = pack.getIndex();
 			packs.remove(pack);
+		}
+		for(ModPack pack : packs) {
+			if(removed != -1 && pack.getIndex() > removed) {
+				pack.setIndex(pack.getIndex() - 1);
+			}
 		}
 	}
 
@@ -114,12 +121,6 @@ public class ModPack {
 		return packs.get(i);
 	}
 
-	/**
-	 * Returns the number of available ModPacks.
-	 */
-	public static int size() {
-		return packs.size();
-	}
 
 	public static ModPack getPack(String dir) {
 		for(ModPack pack : packs) {
@@ -158,7 +159,7 @@ public class ModPack {
 	 * @throws NoSuchAlgorithmException
 	 */
 	public ModPack(String name, String author, String version, String logo, String url, String image, String dir, String mcVersion, String serverUrl, String info, String mods, 
-			String oldVersions, String animation, int idx, boolean privatePack, String xml, String isOp) throws IOException, NoSuchAlgorithmException {
+			String oldVersions, String animation, String maxPermSize, int idx, boolean privatePack, String xml) throws IOException, NoSuchAlgorithmException {
 		index = idx;
 		this.name = name;
 		this.author = author;
@@ -169,8 +170,8 @@ public class ModPack {
 		this.serverUrl = serverUrl;
 		this.privatePack = privatePack;
 		this.xml = xml;
-		this.isOp = isOp;
-		if(!animation.equalsIgnoreCase("")) {
+		this.maxPermSize = maxPermSize;
+		if(!animation.isEmpty()) {
 			this.animation = animation;
 		} else {
 			this.animation = "empty";
@@ -193,14 +194,7 @@ public class ModPack {
 		File verFile = new File(tempDir, "version");
 		URL url_;
 		if(!upToDate(verFile)) {
-			if(isOp == "true")
-			{
-				url_ = new URL(DownloadUtils.getStaticDropboxLink(logo));
-			}
-			else
-			{
-				url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
-			}
+			url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
 			this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 			BufferedImage tempImg = ImageIO.read(url_);
 			ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -214,14 +208,7 @@ public class ModPack {
 			if(new File(tempDir, logo).exists()) {
 				this.logo = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + logo);
 			} else {
-				if(isOp == "true")
-				{
-					url_ = new URL(DownloadUtils.getStaticDropboxLink(logo));
-				}
-				else
-				{
-					url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
-				}
+				url_ = new URL(DownloadUtils.getStaticCreeperhostLink(logo));
 				this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -230,14 +217,7 @@ public class ModPack {
 			if(new File(tempDir, image).exists()) {
 				this.image = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + image);
 			} else {
-				if(isOp == "true")
-				{
-					url_ = new URL(DownloadUtils.getStaticDropboxLink(image));
-				}
-				else
-				{
-					url_ = new URL(DownloadUtils.getStaticCreeperhostLink(image));
-				}
+				url_ = new URL(DownloadUtils.getStaticCreeperhostLink(image));
 				this.image = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, image));
@@ -281,6 +261,10 @@ public class ModPack {
 	 */
 	public int getIndex() {
 		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	/**
@@ -432,5 +416,9 @@ public class ModPack {
 
 	public String getParentXml() {
 		return xml;
+	}
+
+	public String getMaxPermSize() {
+		return maxPermSize;
 	}
 }

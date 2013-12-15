@@ -68,11 +68,11 @@ public class OSUtils {
 	public static String getDynamicStorageLocation() {
 		switch(getCurrentOS()) {
 		case WINDOWS:
-			return System.getenv("APPDATA") + "/multislauncher1.2.3/";
+			return System.getenv("APPDATA") + "/multislauncher/";
 		case MACOSX:
-			return cachedUserHome + "/Library/Application Support/multislauncher1.2.3/";
+			return cachedUserHome + "/Library/Application Support/multislauncher/";
 		case UNIX:
-			return cachedUserHome + "/.multislauncher1.2.3/";
+			return cachedUserHome + "/.multislauncher/";
 		default:
 			return getDefInstallPath() + "/temp/";
 		}

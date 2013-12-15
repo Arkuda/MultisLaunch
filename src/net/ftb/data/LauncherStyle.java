@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.ftb.data;
 
 import java.awt.Color;
@@ -47,17 +46,17 @@ public class LauncherStyle extends Properties {
 		currentStyle.load();
 	}
 	
-	public Color control = new Color(153, 149, 140);
-	public Color text = new Color(0, 0, 0);//.brighter().brighter().brighter().brighter().brighter();
-	public Color nimbusBase = new Color(153, 149, 140);
-	public Color nimbusFocus = new Color(153, 149, 140);
-	public Color nimbusBorder = new Color(153, 149, 140);
-	public Color nimbusLightBackground = new Color(153, 149, 140);
-	public Color info = new Color(125, 249, 255);//.brighter().brighter();
-	public Color nimbusSelectionBackground = new Color(125, 249, 255);//.brighter().brighter();
-	public Color footerColor = new Color(80, 80, 80);
-	public Color filterTextColor = new Color(153, 149, 140);
-	public Color filterInnerTextColor = new Color(153, 149, 140);
+	public Color control = new Color(40, 40, 40);
+	public Color text = new Color(40, 40, 40);
+	public Color nimbusBase = new Color(0, 0, 0);
+	public Color nimbusFocus = new Color(40, 40, 40);
+	public Color nimbusBorder = new Color(40, 40, 40);
+	public Color nimbusLightBackground = new Color(40, 40, 40);
+	public Color info = new Color(40, 40, 40).brighter().brighter();
+	public Color nimbusSelectionBackground = new Color(40, 40, 40).brighter().brighter();
+	public Color footerColor = new Color(25, 25, 25);
+	public Color filterTextColor = new Color(243, 119, 31);
+	public Color filterInnerTextColor = new Color(0, 0, 0);
 
 	public void load() {
 		this.load(Settings.getSettings().getStyle());
@@ -122,4 +121,3 @@ public class LauncherStyle extends Properties {
 	}
 	
 }
-

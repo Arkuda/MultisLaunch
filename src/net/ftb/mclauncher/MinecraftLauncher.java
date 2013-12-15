@@ -27,18 +27,19 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
+import net.feed_the_beast.launcher.json.versions.OS;
 import net.ftb.data.ModPack;
 import net.ftb.data.Settings;
-import net.ftb.gui.panes.ModpacksPane;
 import net.ftb.log.LogLevel;
 import net.ftb.log.Logger;
 import net.ftb.util.OSUtils;
+import net.ftb.util.winreg.JavaFinder;
 
 public class MinecraftLauncher {
-	public static Process launchMinecraft(String workingDir, String username, String password, String forgename, String rmax) throws IOException {
+	
+	public static Process launchMinecraft(String workingDir, String username, String password, String forgename, String rmax, String maxPermSize) throws IOException {
 		String[] jarFiles = new String[] {"minecraft.jar", "lwjgl.jar", "lwjgl_util.jar", "jinput.jar" };
 		StringBuilder cpb = new StringBuilder("");
 		File instModsDir = new File(new File(workingDir).getParentFile(), "instMods/");
@@ -76,8 +77,13 @@ public class MinecraftLauncher {
 		List<String> arguments = new ArrayList<String>();
 
 		String separator = System.getProperty("file.separator");
-		String path = System.getProperty("java.home") + separator + "bin" + separator + "java" + (OSUtils.getCurrentOS() == OSUtils.OS.WINDOWS ? "w" : "");
-		arguments.add(path);
+		String path = new String();
+        if (OS.CURRENT == OS.WINDOWS && JavaFinder.parseWinJavaVersion().path != null)
+            path = JavaFinder.parseWinJavaVersion().path.replace(".exe", "w.exe");
+        else
+            path = System.getProperty("java.home") + ("/bin/java" + (OS.CURRENT == OS.WINDOWS ? "w" : "")).replace("/", separator);
+        Logger.logInfo("Java Path: " + path);
+        arguments.add(path);
 
 		setMemory(arguments, rmax);
 
@@ -85,7 +91,11 @@ public class MinecraftLauncher {
 		arguments.add("-XX:+CMSIncrementalMode");
 		arguments.add("-XX:+AggressiveOpts");
 		arguments.add("-XX:+CMSClassUnloadingEnabled");
-		arguments.add("-XX:MaxPermSize=128m");
+		if(maxPermSize.isEmpty()) {
+			arguments.add("-XX:PermSize=128m");
+		} else {
+			arguments.add("-XX:PermSize=" + maxPermSize);
+		}
 
 		arguments.add("-cp");
 		arguments.add(System.getProperty("java.class.path") + cpb.toString());

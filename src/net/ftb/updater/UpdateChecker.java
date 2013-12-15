@@ -49,7 +49,7 @@ public class UpdateChecker {
 
 	private void loadInfo() {
 		try {
-			Document doc = AppUtils.downloadXML(new URL(DownloadUtils.getStaticDropboxLink("version.xml")));
+			Document doc = AppUtils.downloadXML(new URL(DownloadUtils.getStaticCreeperhostLink("version.xml")));
 			if(doc == null) {
 				return;
 			}
@@ -82,7 +82,7 @@ public class UpdateChecker {
 		String extension = path.substring(path.lastIndexOf('.') + 1);
 		extension = "exe".equalsIgnoreCase(extension) ? extension : "jar";
 		try {
-			URL updateURL = new URL(DownloadUtils.getStaticDropboxLink(downloadAddress + "." + extension));
+			URL updateURL = new URL(DownloadUtils.getCreeperhostLink(downloadAddress + "." + extension));
 			File temporaryUpdate = new File(temporaryUpdatePath);
 			temporaryUpdate.getParentFile().mkdir();
 			DownloadUtils.downloadToFile(updateURL, temporaryUpdate);

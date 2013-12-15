@@ -219,13 +219,19 @@ public class LauncherConsole extends JFrame implements ILogListener {
 	}
 
 	private String getMessage(LogEntry entry) {
-		String color = "white";
+		String color = "black";
 		switch(entry.level) {
 		case ERROR:
 			color = "#FF7070";
 			break;
 		case WARN:
 			color = "yellow";
+		case INFO:
+			break;
+		case UNKNOWN:
+			break;
+		default:
+			break;
 		}
 		return "<font color=\"" + color + "\">" + (entry.toString(logType).replace("<", "&lt;").replace(">", "&gt;").trim().replace("\r\n","\n").replace("\n","<br/>")) + "</font><br/>";
 	}

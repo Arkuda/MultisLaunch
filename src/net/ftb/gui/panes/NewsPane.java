@@ -16,15 +16,11 @@
  */
 package net.ftb.gui.panes;
 
-import java.awt.BorderLayout;
-import java.awt.Desktop;
+import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
@@ -38,8 +34,8 @@ import net.ftb.util.OSUtils.OS;
 
 @SuppressWarnings("serial")
 public class NewsPane extends JPanel implements ILauncherPane {
-	private JEditorPane news;
 	private JScrollPane newsPanel;
+    private final JTextPane blog = new JTextPane();
 
 	public NewsPane() {
 		super();
@@ -50,7 +46,7 @@ public class NewsPane extends JPanel implements ILauncherPane {
 		}
 		setLayout(new BorderLayout());
 
-		news = new JEditorPane();
+		/*news = new JEditorPane();
 		news.setEditable(false);
 		news.addHyperlinkListener(new HyperlinkListener() {
 			@Override
@@ -67,18 +63,36 @@ public class NewsPane extends JPanel implements ILauncherPane {
 		newsPanel = new JScrollPane(news);
 		newsPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		newsPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		add(newsPanel, BorderLayout.CENTER);
+		add(newsPanel, BorderLayout.CENTER);*/
+        blog.setEditable(false);
+        //blog.setMargin(null);
+        blog.setBackground(Color.DARK_GRAY);
+        blog.setContentType("text/html");
+        blog.setText("<html><body><font color=\"#808080\"><br><br><br><br><br><br><br><center><h1>Loading page..</h1></center></font></body></html>");
+        newsPanel = new JScrollPane(blog);
+        newsPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        newsPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        add(newsPanel, BorderLayout.CENTER);
 	}
 
 	@Override
 	public void onVisible() {
-		try {
-			news.setPage("https://googledrive.com/host/0B0bodxwM6nrAZEpqbzVwU3RDSW8");
-			Settings.getSettings().setNewsDate();
-			Settings.getSettings().save();
-			LaunchFrame.getInstance().setNewsIcon();
-		} catch (IOException e1) {
-			Logger.logError(e1.getMessage(), e1);
-		}
-	}
+        Thread thread = new Thread("Update website tab")
+        {
+            public void run()
+            {
+                try
+                {
+                    NewsPane.this.blog.setPage(new URL("http://mcupdate.tumblr.com"));
+                }
+                catch (Exception e)
+                {
+                    //WebsiteTab.LOGGER.error("Unexpected exception loading " + url, e);
+                    NewsPane.this.blog.setText("<html><body><font color=\"#808080\"><br><br><br><br><br><br><br><center><h1>Failed to get page</h1><br>" + e.toString() + "</center></font></body></html>");
+                }
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+    }
 }

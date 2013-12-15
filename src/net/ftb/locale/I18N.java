@@ -31,7 +31,7 @@ public class I18N {
 	private static Properties fallback = new Properties();
 	private static File dir = new File(OSUtils.getDynamicStorageLocation(), "locale");
 	public static HashMap<String, String> localeFiles = new HashMap<String, String>();
-	public static HashMap<Integer, String> localeIndices = new HashMap<Integer, String>();
+	public final static HashMap<Integer, String> localeIndices = new HashMap<Integer, String>();
 	public static Locale currentLocale = Locale.enUS;
 
 	public enum Locale {
@@ -77,8 +77,10 @@ public class I18N {
 	 * Set available locales and load fallback locale
 	 */
 	public static void setupLocale() {
-		localeFiles.put("enUS", "English"); 
-		localeIndices.put(0, "enUS");
+		localeFiles.put("enUS", "English");
+		synchronized (localeIndices) {
+			localeIndices.put(0, "enUS");
+		}
 		try {
 			new LocaleUpdater().start();
 		} catch (Exception e) {
@@ -100,7 +102,9 @@ public class I18N {
 						tmp.clear();
 						tmp.load(new InputStreamReader(new FileInputStream(dir.getAbsolutePath() + File.separator + file), "UTF8"));
 						localeFiles.put(file, tmp.getProperty("LOCALE_NAME", file));
-						localeIndices.put(i, file);
+						synchronized (localeIndices) {
+							localeIndices.put(i, file);
+						}
 						i++;
 					}
 				} catch (IOException e) {
@@ -122,37 +126,18 @@ public class I18N {
 	 * @param locale the language file to be loaded
 	 */
 	public static void setLocale(String locale) {
-		if (locale.equalsIgnoreCase("daDK")) {
-			currentLocale = Locale.daDK;
-		} else if (locale.equalsIgnoreCase("deDE")) {
-			currentLocale = Locale.deDE;
-		} else if(locale.equalsIgnoreCase("nlNL")) {
-			currentLocale = Locale.nlNL;
-		} else if(locale.equalsIgnoreCase("ptBR")) {
-			currentLocale = Locale.ptBR;
-		} else if(locale.equalsIgnoreCase("ptPT")) {
-			currentLocale = Locale.ptPT;
-		} else if(locale.equalsIgnoreCase("ruRU")) {
-			currentLocale = Locale.ruRU;
-		} else if(locale.equalsIgnoreCase("svSE")) {
-			currentLocale = Locale.svSE;
-		} else if(locale.equalsIgnoreCase("esES")) {
-			currentLocale = Locale.esES;
-		} else if(locale.equalsIgnoreCase("itIT")) {
-			currentLocale = Locale.itIT;
-		} else if(locale.equalsIgnoreCase("maHU")) {
-			currentLocale = Locale.maHU;
-		} else if(locale.equalsIgnoreCase("frFR")) {
-			currentLocale = Locale.frFR;
-		} else if(locale.equalsIgnoreCase("cyGB")) {
-			currentLocale = Locale.cyGB;
-		} else if(locale.equalsIgnoreCase("fiFI")) {
-			currentLocale = Locale.fiFI;
-		} else if(locale.equalsIgnoreCase("noNO")) {
-			currentLocale = Locale.noNO;
-		} else {
-			currentLocale = Locale.enUS;
-		}
+	    if (locale == null) {
+	        locale = "enUS";
+	        currentLocale = Locale.enUS;
+	    }
+	    else {
+	        try {
+	        currentLocale = Locale.valueOf(locale);
+	        } catch(IllegalArgumentException e) {
+	            Logger.logWarn("[i18n] Unknown locale " + locale + ". Loaded enUs");
+	            currentLocale = Locale.enUS;
+	        }
+	    }	   
 		getLocaleProperties(locale);
 		Logger.logInfo("[i18n] " + locale + " " + locales.getProperty("LOCALE_LOADED", "loaded"));
 	}

@@ -1,0 +1,18 @@
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 0 enUS to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 1 cyGB to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 2 daDK to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 3 deDE to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 4 esES to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 5 frFR to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 6 itIT to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 7 maHU to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 8 nlNL to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 9 ptBR to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 10 ptPT to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 11 ruRU to options pane
+[12:14:26] [INFO] OptionsPane.<init>:163: [i18n] Added 12 svSE to options pane
+[12:14:26] [INFO] I18N.setLocale:142: [i18n] enUS English language file loaded!
+[12:14:27] [INFO] ModpackLoader.run:58: Loading modpack information for modpacks.xml...
+[12:14:27] [INFO] ModpacksPane.onModPackAdded:308: Adding pack 1
+[12:14:27] [INFO] ModpacksPane.onModPackAdded:308: Adding pack 2
+[12:14:27] [INFO] ModpacksPane.onModPackAdded:308: Adding pack 3

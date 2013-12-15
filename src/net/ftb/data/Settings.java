@@ -47,7 +47,7 @@ public class Settings extends Properties {
 
 	static {
 		try {
-			settings = new Settings(new File(OSUtils.getDynamicStorageLocation(), "ftblaunch.cfg"));
+			settings = new Settings(new File(OSUtils.getDynamicStorageLocation(), "multislaunch.cfg"));
 		} catch (IOException e) {
 			Logger.logError("Failed to load settings", e);
 		}
@@ -68,7 +68,7 @@ public class Settings extends Properties {
 
 	public void save() {
 		try {
-			store(new FileOutputStream(configFile), "FTBLaunch Config File");
+			store(new FileOutputStream(configFile), "MultisLaunch Config File");
 		} catch (IOException e) {
 			Logger.logError("Failed to save settings", e);
 		}
@@ -180,7 +180,7 @@ public class Settings extends Properties {
 		}
 		if(getProperty("privatePacks") != null) {
 			ArrayList<String> packList = getPrivatePacks();
-			if(!packList.contains(code.toLowerCase())) {
+			if(!packList.contains(code)) {
 				packList.add(code);
 				setPrivatePacks(packList);
 			}
@@ -249,6 +249,14 @@ public class Settings extends Properties {
 		return Boolean.parseBoolean(getProperty("snooperDisable", "false"));
 	}
 	
+	public void setDebugLauncher(boolean state) {
+		setProperty("debugLauncher", String.valueOf(state));
+	}
+
+	public boolean getDebugLauncher() {
+		return Boolean.parseBoolean(getProperty("debugLauncher", "false"));
+	}
+
 	public void setLoaded(boolean state) {
 		setProperty("loaded", String.valueOf(state));
 	}

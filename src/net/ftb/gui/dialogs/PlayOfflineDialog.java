@@ -25,7 +25,6 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
@@ -49,7 +48,7 @@ public class PlayOfflineDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				LaunchFrame.getInstance().launchMinecraft(Settings.getSettings().getInstallPath() + File.separator + ModPack.getSelectedPack().getDir()
-						+ File.separator + "minecraft", username, "offlinemods");
+						+ File.separator + "minecraft", username, "offlinemods", ModPack.getSelectedPack().getMaxPermSize());
 			}
 		});
 
