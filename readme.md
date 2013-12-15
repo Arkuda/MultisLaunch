@@ -1,4 +1,4 @@
-Multis Launcher (based om FTB Launcher)
+Multis Launcher (based on FTB Launcher)
 ====
 
 ##The license of Multis Launcher
