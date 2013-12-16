@@ -66,6 +66,20 @@ public class DownloadUtils extends Thread {
 		return resolved;
 	}
 
+
+    public static String getStaticDropboxLink(String file) {
+        String resolved = "http://dl.dropbox.com/u/61847240/MultisLauncher/";
+        resolved = resolved + file;
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection)new URL(resolved).openConnection();
+        } catch (IOException e) {
+        }
+        connection.disconnect();
+        Logger.logInfo(resolved);
+        return resolved;
+    }
+
 	/**
 	 * @param file - the name of the file, as saved to the repo (including extension)
 	 * @return - the direct link

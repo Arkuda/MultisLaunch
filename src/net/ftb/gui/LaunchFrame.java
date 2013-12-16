@@ -161,7 +161,7 @@ public class LaunchFrame extends JFrame {
 	 * @param args - CLI arguments
 	 */
 	public static void main(String[] args) {
-		tracker.setEnabled(true);
+		tracker.setEnabled(false);
 		TrackerUtils.sendPageView("net/ftb/gui/LaunchFrame.java", "Launcher Start v" + version);
 
 		if(new File(Settings.getSettings().getInstallPath(), "MultisLauncherLog.txt").exists()) {

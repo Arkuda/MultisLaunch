@@ -49,7 +49,7 @@ public class UpdateChecker {
 
 	private void loadInfo() {
 		try {
-			Document doc = AppUtils.downloadXML(new URL(DownloadUtils.getStaticCreeperhostLink("version.xml")));
+			Document doc = AppUtils.downloadXML(new URL(DownloadUtils.getStaticDropboxLink("version.xml")));
 			if(doc == null) {
 				return;
 			}
